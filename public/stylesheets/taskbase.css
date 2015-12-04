@@ -1,0 +1,140 @@
+/* Start task side bar */
+#side-nav{
+	width: 15%;
+	float: left;
+	font-size: 18px;
+}
+#side-nav a{
+	color: #8E8E93;
+}
+
+#side-nav li.active a{
+	color: #1F1F21;
+	background-color: white;
+	border-left: 8px solid #5AC8FB;
+}
+
+#side-nav li.active:after {
+	position: absolute;
+	top: 0;
+	right: 0px;
+	display: inline-block;
+	border-left: 0;
+	border-right: 21px solid white;
+	border-top: 21px solid transparent;
+	border-bottom: 21px solid transparent;
+	content: '';
+}
+
+#side-nav li.active a:after{
+	position: absolute;
+	top: -5px;
+	right: 0px;
+	display: inline-block;
+	border-left: 0;
+	border-right: 26px solid #F1F1F1;
+	border-top: 26px solid transparent;
+	border-bottom: 26px solid transparent;
+	content: '';
+}
+
+/* End task side bar */
+
+/* Start task body */
+
+#task-body{
+	width: 85%;
+	min-height: 600px;
+	padding: 20px;
+	float: right;
+	display: inline-block;
+	position: relative;
+	background-color: white;
+}
+
+/* End task body */
+
+/* Start form input */
+
+section{
+	margin-bottom: 42px;
+}
+
+section > h3{
+	padding: 10px 0;
+	margin: 0;
+	color: #5AC8FB;
+	border-bottom: 1px dashed #ccc;
+}
+
+.form-group{
+	margin: 15px 0;
+}
+
+.form-label{
+	width:15%;
+	height: 100%;
+	display: inline-block;
+	vertical-align:top;	
+}
+
+.form-label label{
+	height: 100%;
+}
+
+.form-input{
+	width:60%;
+	display: inline-block;
+}
+
+/* End form input */
+
+/* Start pagination */
+
+nav.pager-nav{
+	position: absolute;	
+	bottom: 0;
+}
+
+.pagination>.active>a, .pagination>.active>a:hover, .pagination>.active>a:focus {
+	background-color: #5AC8FB;
+	border-color: #5AC8FB;
+}
+
+.froala-box{
+	min-height: 96px;
+	max-height: 200px;
+	overflow: auto;
+	padding: 6px 12px;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.froala-box:focus{
+	border-color:#66afe9;
+	outline:0;
+	-webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+	box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,289 @@
+/* Start side bar */
+#side-nav{
+	width: 15%;
+	float: left;
+	font-size: 18px;
+}
+
+#side-nav a{
+	color: #8E8E93;
+}
+
+#side-nav li.active a{
+	color: #1F1F21;
+	background-color: white;
+	border-left: 8px solid #5AC8FB;
+}
+
+#side-nav li.active:after {
+	position: absolute;
+	top: 0;
+	right: 0px;
+	display: inline-block;
+	border-left: 0;
+	border-right: 21px solid white;
+	border-top: 21px solid transparent;
+	border-bottom: 21px solid transparent;
+	content: '';
+}
+
+#side-nav li.active a:after{
+	position: absolute;
+	top: -5px;
+	right: 0px;
+	display: inline-block;
+	border-left: 0;
+	border-right: 26px solid #F1F1F1;
+	border-top: 26px solid transparent;
+	border-bottom: 26px solid transparent;
+	content: '';
+}
+
+/* End side bar */
+
+#company-content, #verify-gp{
+	width: 85%;
+	min-height: 600px;
+	padding: 0 20px 20px 20px;
+	float: right;
+	display: inline-block;
+	background-color: white;
+}
+
+#company-content h3{
+	margin: 10px 0 30px 0;
+}
+
+/* Start form input */
+
+.form-group{
+	margin: 15px 0;
+}
+
+.form-label{
+	width:15%;
+	height: 100%;
+	display: inline-block;
+	vertical-align:top;	
+}
+
+.form-label label{
+	height: 100%;
+}
+
+.form-input{
+	width:60%;
+	display: inline-block;
+}
+
+#addr-tb-gp{
+	width: 60%;
+	display: inline-block;
+}
+
+#addr-tb thead th{
+	padding-top: 0;
+}
+
+#addr-tb thead th:first-child, #addr-tb tr td:first-child{
+	padding-left: 0;
+}
+
+.addr-del{
+	text-align: center;
+}
+
+.addr-del span{
+	color: #FF4444;
+	font-size: 30px;
+}
+
+#add-addr-row{
+	display: inline-block;	
+}
+
+#add-addr-row > span{
+	float: right;	
+	font-size: 30px;
+	color:#4cae4c;
+}
+
+#save-company-btn, #verify-company-btn{
+	margin-top: 15px;
+}
+
+#verify-company-btn{
+	margin-left:15px;
+}
+
+#comy-ver img{
+	width: 24px;
+	height:25px;
+	display: inline;	
+}
+
+#comy-ver p{
+	display: inline-block;
+}
+
+#ver-link{
+	margin-left: 60px;
+	padding: 5px 10px;
+	background-color: #31b0d5;
+	color: white;
+	border-radius: 5px;
+}
+
+#ver-link:hover{
+	opacity: 0.8;
+}
+
+#ver-link:active{
+	background-color: #269abc;
+}
+
+#note-gp{
+	margin: 20px;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 30px;
+}
+
+#note-gp img{
+	width: 30px;
+	height: 30px;
+}
+
+#ver-form{
+	margin: 60px 0;
+}
+
+#ic-gp{
+	margin: 0 -15px;
+}
+
+.ic {
+  width: 300px;
+  height: 200px;
+  line-height: 200px;
+  text-align: center;
+  display: inline-block;
+  float: initial;
+  position:relative;
+  margin: 0 15px;
+  padding: 0;
+  background-color: #f1f1f1;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.ic > input{
+	width: 100%;
+	opacity: 0;
+	position: absolute;
+	z-index: 99;
+}
+
+.ic > p{
+	position: absolute;
+  	left: 0;
+  	right: 0;
+}
+
+#ic-front, #ic-back{
+	background-repeat: no-repeat;
+	-webkit-background-size: cover; 
+    -moz-background-size: cover; 
+    -o-background-size: cover; 
+    background-size: cover;
+}
+
+#bizfile-gp {
+	margin: 30px 0;
+}
+
+.sm{
+	width: 214px;
+}
+
+/* End form input */
+
+#logo-link{
+	display: inline-block;
+	width: 160px;
+	height: 160px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	cursor: pointer;
+}
+
+/******************************************* Logo Upload Modal Start ************************************/
+#logo-edit-model h3{
+	color: #2a6496;
+	z-index: 999;	
+}
+
+#logo-edit-model img{
+	width: 100%;
+	height: auto;
+}
+
+#logo-btn-wrap{
+	padding: 6px 12px;
+	overflow: hidden;
+}
+
+#logo-btn-wrap{
+	padding: 6px 12px;
+	overflow: hidden;
+}
+
+#logo-upload{
+	position: absolute;
+	height: 33px;
+	margin: 0;
+	padding: 0;
+	top: 20px;
+	left: 20px;
+	font-size: 20px;
+	cursor: pointer;
+	opacity: 0;
+}
+
+#logo-submit{
+	padding:6px 12px;
+	float: right;
+}
+
+#upload-fn{
+	padding:0;
+	margin-bottom: 0;
+	height:33px;
+	line-height: 33px;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+#fn-text{
+	height:100%;
+	padding: 6px 12px;
+	line-height:15px;
+	font-size: 15px;
+	color: #666;
+	border: 1px solid #D8D8D8;
+	font-family: inherit;
+	border-radius: 4px;
+}
+
+.jcrop-keymgr{
+	display: none !important; 
+}
+
+.jcrop-holder{
+	margin-top: 15px !important;
+}
+
+/******************************************* Logo Upload Modal End ************************************/
+
+

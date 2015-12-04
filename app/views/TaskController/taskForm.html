@@ -1,0 +1,639 @@
+#{extends 'TaskController/taskBase.html' /}
+#{set title:'Task form' /}
+#{set page_index:0 /}
+#{set showSaveBtn:true /}
+
+<link href="@{'/public/stylesheets/taskform.css'}" rel="stylesheet">
+<link href="@{'/public/stylesheets/bootstrap/bootstrap-datetimepicker.min.css'}" rel="stylesheet">
+<link href="@{'/public/stylesheets/froala/font-awesome.min.css'}" rel="stylesheet">
+<link href="@{'/public/stylesheets/froala/froala_editor.min.css'}" rel="stylesheet">
+<link href="@{'/public/stylesheets/froala/froala_style.min.css'}" rel="stylesheet">
+
+<script src="@{'/public/javascripts/froala/froala_editor.min.js'}" type="text/javascript"></script>
+
+<form id="task-form">
+	<ul class="nav nav-tabs">
+	  <li class="active"><a href="#tab-task" data-toggle="tab">Task</a></li>
+	  <li><a href="#tab-reward" data-toggle="tab">Reward</a></li>
+	  <li><a href="#tab-product" data-toggle="tab">Product</a></li>
+	</ul>
+	<div class="tab-content">
+		<div class="tab-pane active" id="tab-task">
+	    	<div class="tab-content">
+	    		<div class="form-group">
+					<div class="form-label">
+						<label for="t-title">Title:</label>
+					</div>
+					<div class="form-input">
+						<input type="text" class="form-control" name="task.title" id="t-title" placeholder="Title" value="${task?.title}">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="form-label">
+						<label for="t-desc">Description:</label>
+					</div>
+					<div class="form-input">
+						<textarea id="t-desc" class="form-control" name="task.description" rows="4" placeholder="Description">${task?.description}</textarea>
+					</div>
+				</div>
+				
+				<div id="t-tag-gp" class="form-group">
+					<div class="form-label">
+						<label>Categories/Tags:</label>
+					</div>
+					
+					<div class="form-input">
+						#{list items:tags, as:'tag'}
+							<label id="tag-${tag.id}" class="tag">
+								<input type="radio" name="tagId" class="form-control product-tag" value="${tag.id}">
+								<a id="${tag.name}-tag" class="radio-box">${tag.name}
+									<i class="icon-check"></i>
+								</a>
+							</label>
+						#{/list}
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="form-label">
+						<label for="t-startdate">Start from:</label>
+					</div>
+					<div id="srt-date" class="form-input">
+						<input type="text" id="t-startdate" class="form-control" name="task.startDate" placeholder="Start from" value="${task?.startDate}" data-date-format="YYYY-MM-DD">
+					</div>
+				</div>
+				
+			    <div class="form-group">
+			    	<div class="form-label">
+						<label for="t-enddate">End at:</label>
+					</div>
+					<div id="end-date" class="form-input">
+						<input type="text" id="t-enddate" class="form-control" name="task.endDate" placeholder="End at" value="${task?.endDate}" data-date-format="YYYY-MM-DD">
+					</div>
+				</div>
+	    	</div>
+		</div>
+		
+		<div class="tab-pane" id="tab-reward">
+	    	<div class="tab-content">
+	    		<div class="form-group">
+					<div class="form-label">
+						<label for="reward-title">Title:</label>
+					</div>
+					<div id="reward-title-input"class="form-input">
+						<input type="text" class="form-control" name="reward.title" id="reward-title" placeholder="Title" value="${reward?.title}">
+					</div>
+				</div>
+				
+				<div id="a-ty-gp" class="form-group">
+					<div class="form-label">
+						<label>Reward strategy:</label>
+					</div>
+					
+					<div class="form-input">
+						#{list items: rewardTypes, as: 'rewardType' }
+							<label class="tag #{if reward?.rewardType?.getName()?.contains(rewardType.getName())} selected #{/if}">
+								<input type="radio" name="reward.rewardType" class="form-control reward-tag" value="${rewardType}"
+									#{if reward?.rewardType}
+										#{if reward?.rewardType?.getName()?.contains(rewardType.getName())} checked #{/if}#{else} disabled #{/else}
+									#{/if} >
+								<a class="radio-box">${rewardType}
+									<i class="icon-check"></i>
+								</a>
+							</label>
+						#{/list}    
+					</div>
+				</div>
+				
+				<div id="reward-val-gp" class="form-group hidden">
+					<div class="form-label">
+						<label for="reward-val"></label>
+					</div>
+					<div class="form-input">
+						<input type="text" name="reward.value" class="form-control" id="reward-val" placeholder="0" value="${reward?.value}" #{if reward?.value > 0} readonly #{/if}>
+					</div>
+				</div>
+				
+				<div id="share-gp" class="form-group">
+					<div class="form-label">
+						<label for="t-share-time">Minimum shares:</label>
+					</div>
+					<div id="share-time" class="form-input">
+						<input type="text" name="reward.minShares" class="form-control" id="t-share-time" placeholder="Integer" value="${reward?.minShares}" #{if reward?.minShares > 0} readonly #{/if}>
+					</div>
+				</div>
+				
+				<div class="form-group">
+			    	<div class="form-label">
+						<label for="exp-val">Expired date:</label>
+					</div>
+					<div id="exp-date" class="form-input">
+						<input type="text" id="exp-val" class="form-control" name="reward.expireDate" placeholder="Expire date" value="${reward?.expireDate}" data-date-format="YYYY-MM-DD">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="form-label">
+						<label for="a-instuct">Instruction:</label>
+					</div>
+					<div class="form-input">
+						<textarea id="a-instuct" class="form-control" name="reward.instruction" rows="4" placeholder="Instruction">${reward?.instruction}</textarea>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="form-label">
+						<label>Collect address:</label>
+					</div>
+					<div class="form-input">
+						<input type="text" id="addr" class="form-control" name="reward.collectAddress" placeholder="Street/Road" value="${reward?.collectAddress}">
+						<input type="text" id="addr-unit" class="form-control" name="reward.collectUnit" placeholder="Unit No." value="${reward?.collectUnit}">
+						<input type="text" id="addr-post" class="form-control" name="reward.collectPostCode" placeholder="Post code" value="${reward?.collectPostCode}">
+					</div>
+				</div>
+	    	
+	    	</div>
+	   	</div>
+	   	
+	   	<div class="tab-pane" id="tab-product">
+	    	<div class="tab-content">
+	    		<div class="form-group">
+					<div class="form-label">
+						<label for="p-name">Product:</label>
+					</div>
+					<div class="form-input">
+						<input type="text" name="product.productName" class="form-control" id="p-name" placeholder="Product name" value="${product?.productName}">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="form-label">
+						<label for="p-price">Price:</label>
+					</div>
+					<div class="form-input">
+						<input type="text" name="product.price" class="form-control" id="p-price" placeholder="Product price" value="${product?.price}" #{if product?.price} readonly #{/if}>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="form-label">
+						<label for="p-desc">Product description:</label>
+					</div>
+					<div class="form-input">
+						<textarea id="p-desc" class="form-control" name="product.description" rows="4" placeholder="Product description">${product?.description}</textarea>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="form-label">
+						<label for="m-link">Merchant link:</label>
+					</div>
+					<div id="merchant-link" class="form-input">
+						<input type="text" name="product.merchantLink" class="form-control" id="m-link" placeholder="Merchant link" value="${product?.merchantLink}">
+					</div>
+				</div>
+	    	</div>
+	    	
+	    	<section id="coupon-sec">
+				<h3>Product Coupon</h3>
+				<div class="form-group">
+					<div class="form-label">
+						<label for="coup-val">Value:</label>
+					</div>
+					<div id="coup-val-wrap" class="form-input">
+						<input type="text" name="product.coupons[0].value" class="form-control" id="coup-val" placeholder="Value" #{if product?.coupons?.iterator()?.hasNext()} value="${product?.coupons?.iterator()?.next()?.value}" readonly#{/if}>
+					</div>
+				</div>
+				
+				<div class="form-group">
+			    	<div class="form-label">
+						<label for="coup-exp-val">Expired date:</label>
+					</div>
+					<div id="coup-exp-date" class="form-input">
+						<input type="text" id="coup-exp-val" class="form-control" name="product.coupons[0].expireDate" placeholder="Expire date" #{if product?.coupons?.iterator()?.hasNext()} value="${product?.coupons?.iterator()?.next()?.expireDate}"#{/if} data-date-format="YYYY-MM-DD">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="form-label">
+						<label for="coup-instruct">Instruction</label>
+					</div>
+					<div class="form-input">
+						<textarea id="coup-instruct" class="form-control" name="product.coupons[0].instruction" rows="4" placeholder="Coupon instruction">#{if product?.coupons?.iterator()?.hasNext()}${product?.coupons?.iterator()?.next()?.instruction}#{/if}</textarea>
+					</div>
+				</div>
+			</section>
+	   	</div>
+	</div>
+	<input type="hidden" name="task.id" value="${task?.id}">
+</form>
+
+<section id="product-img-sec" class="hidden">
+	<h3>Product images</h3>
+	<div class="form-group image-wrap">
+		#{list items:task?.images, as:"image"}
+			<div id="${image.id}" class="col-xs-14 col-sm-6 col-md-4 col-lg-3 file-item" style="background-image: url('${image?.thumbnailPath}')">
+				<a class="del-link"><i class="glyphicon glyphicon-trash"></i></a>
+			</div>
+		#{/list}
+	     
+		<div id="product-img-add-btn" class="add-ico col-xs-14 col-sm-6 col-md-4 col-lg-2 file-item">
+			<i class="plus-ico glyphicon glyphicon-plus"></i>
+		  	<input id="product-img" class="file-input" type="file" name="blob" data-url="uploadProductImage" />
+		</div>
+	</div>
+	
+	<div class="image-note">
+		<b>Note: </b>At least 1 screenshots are required overall. Max 10 screenshots. JPEG or 24-bit PNG (no alpha). Min length for any side: 320px. Max length for any side: 3840px. File size: 5MB or below<br>
+	</div>
+</section>
+
+<section id="reward-img-sec" class="hidden">
+	<h3>Reward Image</h3>
+	
+	<div class="form-group image-wrap">
+		#{list items:task?.rewards?.iterator()?.next()?.images, as:"image"}
+			<div id="${image.id}" class="col-xs-14 col-sm-6 col-md-4 col-lg-3 file-item" style="background-image: url('${image?.thumbnailPath}')">
+				<a class="del-link"><i class="glyphicon glyphicon-trash"></i></a>
+			</div>
+		#{/list}
+		
+		<div id="reward-img-add-btn" class="add-ico col-xs-14 col-sm-6 col-md-4 col-lg-2 file-item">
+			<i class="plus-ico glyphicon glyphicon-plus"></i>
+		  	<input id="reward-img" class="file-input" type="file" name="blob" data-url="uploadRewardImage" />
+		</div>
+	</div>
+	
+	<div class="image-note">
+		<b>Note: </b>At least 1 screenshots are required overall. Max 10 screenshots. JPEG or 24-bit PNG (no alpha). Min length for any side: 320px. Max length for any side: 3840px. File size: 5MB or below<br>
+	</div>
+</section>
+
+<script src="@{'/public/javascripts/bootstrap/bootstrap-datetimepicker.js'}" type="text/javascript"></script>
+<script src="@{'/public/javascripts/jquery.ui.widget.js'}"></script>
+<script src="@{'/public/javascripts/jquery.fileupload.js'}" type="text/javascript"></script>
+<script type="text/javascript">
+	$(function(){
+		$('#reward-img').fileupload({
+			dataType: 'json',
+	        add: function (e, data) {
+	        	if (data.files && data.files[0]) {
+	                var reader = new FileReader();
+	                reader.onload = function(e) {
+	                	var wraper = document.createElement('div');
+		                wraper.className = "col-xs-14 col-sm-6 col-md-4 col-lg-3 file-item";
+		                wraper.style.backgroundImage = "url(" + e.target.result + ")";
+		                
+		                var aLink = document.createElement('a');
+		                aLink.className = "del-link";
+		                
+		                var icon = document.createElement('i');
+		                icon.className = "glyphicon glyphicon-trash";
+		                
+		               	aLink.appendChild(icon);
+		               	wraper.appendChild(aLink);
+		            
+		        		var addBtn = document.getElementById('reward-img-add-btn');
+		        		addBtn.parentNode.insertBefore(wraper, addBtn);
+	                }
+	                reader.readAsDataURL(data.files[0]);
+	                
+	                data.submit();
+	        	}
+	        },
+	        formData: {
+                rewardId: '${task?.rewards?.iterator()?.next()?.id}'
+         	},
+	        done: function (e, data) {},
+	        fail: function (data) {
+	        	showAlertToast(data.jqXHR.responseText, "alert-danger");
+	        }
+	    });
+		
+		$('#product-img').fileupload({
+			dataType: 'json',
+	        add: function (e, data) {
+	        	if (data.files && data.files[0]) {
+	                var reader = new FileReader();
+	                reader.onload = function(e) {
+	                	var wraper = document.createElement('div');
+		                wraper.className = "col-xs-14 col-sm-6 col-md-4 col-lg-3 file-item";
+		                wraper.style.backgroundImage = "url(" + e.target.result + ")";
+		                
+		                var aLink = document.createElement('a');
+		                aLink.className = "del-link";
+		                
+		                var icon = document.createElement('i');
+		                icon.className = "glyphicon glyphicon-trash";
+		                
+		               	aLink.appendChild(icon);
+		               	wraper.appendChild(aLink);
+		            
+		        		var addBtn = document.getElementById('product-img-add-btn');
+		        		addBtn.parentNode.insertBefore(wraper, addBtn);
+	                }
+	                reader.readAsDataURL(data.files[0]);
+	                
+	                data.submit();
+	        	}
+	        },
+	        formData: {
+                taskId: '${task?.id}'
+         	},
+	        done: function (e, data) {},
+	        fail: function (data) {
+	        	showAlertToast(data.jqXHR.responseText, "alert-danger");
+	        }
+	    });
+		
+		$(document).on('click', '.del-link', function(){
+     		var root = $(this).parents('.file-item');
+      		deleteImage(root);
+        });
+		
+		$(document).on( 'shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+			var tabId = $(e.target).attr("href");
+			if(tabId == "#tab-product"){
+				$('#product-img-sec').removeClass('hidden');
+				$('#reward-img-sec').addClass('hidden');
+			}else if(tabId == "#tab-reward"){
+				$('#product-img-sec').addClass('hidden');
+				$('#reward-img-sec').removeClass('hidden');
+			}else{
+				$('#product-img-sec').addClass('hidden');
+				$('#reward-img-sec').addClass('hidden');
+			}
+		});
+		
+		$('#a-instuct').editable({inlineMode: true});
+		$('#t-desc').editable({inlineMode: true});
+		$('#p-desc').editable({inlineMode: true});
+		$('#coup-instruct').editable({inlineMode: true});
+		
+    	$('#srt-date').datetimepicker();
+    	$('#end-date').datetimepicker();
+    	$('#exp-date').datetimepicker();
+    	$('#coup-exp-date').datetimepicker();
+    	
+    	$('#a-ty-gp .reward-tag').on('click', function(){
+    		if("${reward?.rewardType?.getName()}" == ''){
+    			$('#a-ty-gp label.tag.selected').removeClass('selected');
+       	   		$(this).parent().addClass('selected');
+       	   		$('#reward-val-gp').addClass('hidden');
+       	   		rewardTypeSwitcher();	
+    		}  
+	   	});
+    	
+    	rewardTypeSwitcher();
+    	
+    	$('#t-tag-gp .product-tag').on('click', function(){
+       		$('#t-tag-gp label.tag.selected').removeClass('selected');
+       		$(this).parent().addClass('selected');
+       	});
+    	
+    	$('.file-item').on('click', function(){
+    		$('.file-item.selected').removeClass('selected');
+    		$(this).addClass('selected');
+    	});
+    	
+    	try {
+    		var tagJson = '${new flexjson.JSONSerializer().serialize(task?.tags).escapeJavaScript().raw()}';
+        	var productTags = jQuery.parseJSON(tagJson);
+       		$.each(productTags, function(index, value){
+       			var tagLabel = $('#tag-' + value.id);
+       			tagLabel.addClass('selected');
+       			tagLabel.find("input:radio[name='tagId']").prop('checked', true);
+       		});
+    	}catch(err) {
+    	   	console.log(err);
+    	}
+   		
+    	$("#task-form").validate({
+    		ignore:'',
+	        rules: {
+	            "task.title":{
+	            	minlength: 3,
+	                maxlength: 80,
+	            	required:true
+	            },
+	            "task.description":{
+	            	required:true
+	            },
+	            "task.startDate":{
+	            	required: true,
+	                date: true,
+	                largerToday: true
+	            },
+	            "task.endDate":{
+	            	required: true,
+	                date: true,
+	                largerThanStart: true
+	            },
+	            "reward.rewardType":{
+	        		required:true
+	            },
+	            "reward.minShares":{
+	            	required: true,
+	            	range:[0, 100],
+	            	digits: true
+	            },
+	            "reward.instruction":{	
+            		required:true
+	            },
+	            "reward.value":{
+	            	number: true,
+	            	required: true,
+	            	range: function(element){
+	            		var tabVal = $('#tab-reward label.tag.selected > input').val();
+	            		if(tabVal != "FREE"){
+	            			return [0.01, 0.99];
+	            		}
+	            	}
+	            },
+	            "reward.expireDate": {
+	            	required: true,
+	                date: true,
+	                largerThanEnd: true
+	            },
+	            "reward.collectAddress":{
+	            	required:true
+	            },
+	            "reward.collectPostCode":{
+	            	required: true,
+	            	number: true
+	            },
+	            tagId:{
+	        		required:true		
+	            },
+	            "product.productName":{
+	            	minlength: 3,
+	                maxlength: 80,
+	                required:true
+	            },
+	            "product.price":{
+	            	required: true,
+	            	number: true,
+	            	range:[0, 9999999]
+	            },
+	            "product.description":{	
+	            	minlength: 3,
+	            	required:true
+	            },
+	            "product.merchantLink":{
+	            	url:true
+	            },
+	            "product.coupons[0].value":{
+	            	number:true,
+	            	required: function(element){
+	            		var tabVal = $('#tab-reward label.tag.selected > input').val();
+	                    return tabVal == "COMMISSION";
+	            	}
+	            },
+	            "product.coupons[0].expireDate":{
+	            	date:true,
+	            	required: function(element){
+	            		var tabVal = $('#tab-reward label.tag.selected > input').val();
+	                    return tabVal == "COMMISSION";
+	            	}
+	            }
+	        },
+	        highlight: function (element) {
+	            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+	        },
+	        unhighlight: function (element) {
+	            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+	        },
+	        errorPlacement: function(error, element) {
+	            if (element.attr("name") == "reward.rewardType"){
+	            	$("#a-ty-gp .form-input").append(error);
+	            }else if (element.attr("name") == "tagId"){
+	            	$("#t-tag-gp .form-input").append(error);
+	            }else{
+	            	error.insertAfter(element);
+	            }
+	        },
+	        invalidHandler: function() {
+	        	if($('#tab-task div.has-error').length > 0){
+					$('.nav-tabs a[href="#tab-task"]').tab('show');
+	        	}else if($('#tab-reward div.has-error').length > 0){
+	        		$('.nav-tabs a[href="#tab-reward"]').tab('show');
+	        	}else if($('#tab-product div.has-error').length > 0){
+	        		$('.nav-tabs a[href="#tab-product"]').tab('show');
+	        	}
+	        },
+	        submitHandler: function(form, event) {
+	        	if($('.file-item').length == 0){
+	        		showAlertToast("You have to upload at least one image for the product.", "alert-danger");
+	        		return;
+	        	}
+	        	
+	            $.ajax({
+	                url: "/TaskController/saveTaskForm",
+	                type: "POST",
+	                data: $(form).serialize(),
+	                success: function(response, status) {
+	                	if(status == "success" && response > 0){
+	                		showAlertToast("Task has been saved successfully.", "alert-success");
+	                	}else{
+	                		showAlertToast("Error (" + status + "): " + "Server got failed.", "alert-danger");
+	                	}
+	                	$('#save-task-btn').html("Save");
+	                },
+	                error: function(request, status, err){
+	                	showAlertToast("Error (" + status + "): " + err, "alert-danger");
+	                }
+                });
+	            $('#save-task-btn').html("<span class=\"glyphicon glyphicon-refresh glyphicon-spinner\"></span> Saving...");
+	         }
+	    });
+    	
+    	$.validator.addMethod("largerThanStart", function(value, element) {
+            var startDate = $('#t-startdate').val();
+            return Date.parse(startDate) <= Date.parse(value) || value == "";
+        }, "End date must be after start date");
+    	
+    	$.validator.addMethod("largerToday", function(value, element) {
+            return new Date() <= Date.parse(value) || value == "";
+        }, "The date must be after today");
+    	
+    	$.validator.addMethod("largerThanEnd", function(value, element) {
+            var endDate = $('#t-enddate').val();
+            return Date.parse(endDate) <= Date.parse(value) || value == "";
+        }, "Expired date must be after end date");
+    	
+    });
+	
+	function deleteImage(element){
+		var id = element.attr('id');
+		$.ajax({
+	        url: "/TaskController/deleteImage",
+	        type: "POST",
+	        data: {
+	        	taskId: '${task?.id}',
+				imageId: id
+			},
+	        success: function(response, status) {
+	        	if(status == "success" && response > 0){
+	        		element.remove();
+	        	}else{
+	        		alert("Delete Image failed !");
+	        	}
+	        },
+	        error: function(request, status, err){
+            	showAlertToast("Error (" + status + "): " + err, "alert-danger");
+            }
+	    });
+	}
+	
+	function rewardTypeSwitcher(){
+		var selTag = $('#a-ty-gp label.tag.selected > input').val();
+		var errLbl = $('#reward-val-gp .error');
+		if($('#reward-val-gp').hasClass('has-error')){
+			$('#reward-val-gp').removeClass('has-error');
+		}
+		if(errLbl){
+			errLbl.remove();
+		}
+		
+		if('${reward?.rewardType?.getName()?.toUpperCase()}' == selTag){
+			$('#reward-val').val('${reward.value}');	
+		}else{
+			$('#reward-val').val(0);
+		}
+		
+    	if(selTag == 'DISCOUNT'){
+    		$('#share-gp').removeClass('hidden');
+    		$('#reward-val-gp').removeClass('hidden');
+    		$('#reward-val-gp > .form-label > label').text('Discount');
+    	}else if(selTag == 'FREE'){
+    		$('#share-gp').removeClass('hidden');
+    		$('#reward-val').val(0);
+    	}else if(selTag == 'COMMISSION'){
+    		$('#share-gp').addClass('hidden');
+    		$('#reward-val-gp').removeClass('hidden');
+    		$('#reward-val-gp > .form-label > label').text('Commission');
+    		$('#t-share-time').val(0);
+    	}
+	}
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

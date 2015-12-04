@@ -1,0 +1,63 @@
+#{extends 'TaskController/taskBase.html' /}
+#{set title:'All my task' /}
+#{set page_index:'2' /}
+
+<link href="@{'/public/stylesheets/alltask.css'}" rel="stylesheet">
+
+<script type="text/javascript">
+	function deleteJob(e, id){
+		$.ajax({
+            url: "/JobController/deleteJob",
+            type: "POST",
+            data: {
+            	jobId: id
+            },
+            success: function(response, status) {
+            	if(status == 'success' && response == id){
+            		window.location.reload(true);
+            	}else{
+            		showAlertToast("Delete failed, please refresh the page and try again.", "alert-danger");
+            		e.innerHTML = "Delete";
+            	}
+            },
+            error: function(err){
+            	showAlertToast("Error: " + err, "alert-danger");
+            	e.innerHTML = "Delete";
+            }
+        });
+		e.innerHTML = "<span class=\"glyphicon glyphicon-refresh glyphicon-spinner\"></span>";
+	}
+</script>
+
+<table class="table table-striped">
+    <thead>
+      <tr class="row">
+        <th>#</th>
+        <th>Task title</th>
+        <th>Active shares</th>
+        <th>Date Taken</th>
+        <th>End Date</th>
+        <th>View</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+    	%{
+			int i = 1;
+		}%
+   		#{list items:jobs, as:'job'}
+			<tr id="job-${job?.id}" class="row">
+	          <th scope="row">${i}</th>
+	          <td>${job?.task?.title}</td>
+	          <td>${job?.accesses?.size()}</td>
+	          <td>${job?.takenDatetime?.format('dd-MMM-yyyy')}</td>
+	          <td>${job?.task?.endDate?.format('dd-MMM-yyyy')}</td>
+	          <td><a class="btn btn-info" href="@{TaskController.taskDetail(job?.task?.id)}">View</a></td>
+	          <td><a class="btn btn-danger job-del" onClick="deleteJob(this, ${job?.id})">Delete</a></td>
+	        </tr>
+	        %{i++}%
+		#{/list}
+    </tbody>
+</table>
+
+#{pager model:"job", total:totalCount, currentPage:pageIndex, pageCount:10/}

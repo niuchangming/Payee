@@ -1,0 +1,316 @@
+#{extends 'main.html' /}
+#{set title:'Company Information' /}
+
+<link rel="stylesheet" href="@{'/public/stylesheets/company.css'}">
+<link href="@{'/public/stylesheets/jcrop/jquery.Jcrop.min.css'}" rel="stylesheet" media="screen">
+<script src="@{'/public/javascripts/jcrop/jquery.Jcrop.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+
+<div id="tool-bar"></div>
+
+<div id="side-nav">
+    <ul class="nav">
+      <li id="profile" class=""><a href="@{ProfileController.profile()}">Edit Profile</a></li>
+      <li id="reset-pwd" class=""><a href="@{ProfileController.resetPassword()}">Reset password</a></li>
+      <li id="Company" class="active"><a href="">Company Info</a></li>
+    </ul>
+</div>
+
+<div id="company-content">
+	<h3>Company information</h3>
+	
+	<a id="logo-link" style="background-image: url('@{ProfileController.showCompanyLogo(company?.id)}');" data-toggle="modal" data-target="#logo-edit-model"></a>
+	
+	<form id="company-form">
+		<div id="comy-ver" class="form-group" #{if company}style="display:block;"#{/if} #{else}style="display:none;"#{/else}>
+			<div class="form-label">
+				<label>Verification:</label>
+			</div>
+			<div class="form-input">
+				#{if company?.verifyStatus == models.VerifyStatus.VERIFIED}
+					<img src="../../public/images/secure_img.png" />
+					<p>Verfied</p>
+				#{/if}
+				#{elseif company?.verifyStatus == models.VerifyStatus.PENDING}
+					<img src="../../public/images/insecure_img.png" />
+					<p>Pending</p>
+				#{/elseif}
+				#{else}
+					<img src="../../public/images/insecure_img.png" />
+					<p>Unverified</p>
+					<a id="ver-link" href="@{ProfileController.verifyCompany()}">Go to verify</a>
+				#{/else}
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="form-label">
+				<label for="comy-name">Company name:</label>
+			</div>
+			<div class="form-input sm">
+				<input type="text" class="form-control" name="company.name" id="comy-name" placeholder="Company name" value="${company?.name}">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="form-label">
+				<label for="comy-desc">Company description:</label>
+			</div>
+			<div class="form-input">
+				<textarea id="comy-desc" class="form-control" name="company.description" rows="4" placeholder="Description">${company?.description}</textarea>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="form-label">
+				<label for="comy-contact">Contact no:</label>
+			</div>
+			<div class="form-input sm">
+				<input type="text" class="form-control" name="company.contactNo" id="comy-contact" placeholder="Contact no" value="${company?.contactNo}">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="form-label">
+				<label for="comy-fax">Fax no:</label>
+			</div>
+			<div class="form-input sm">
+				<input type="text" class="form-control" name="company.fax" id="comy-fax" placeholder="Fax no" value="${company?.fax}">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="form-label">
+				<label for="comy-addr">Address:</label>
+			</div>
+			<div id="addr-tb-gp">
+				<table id="addr-tb" class="table table-striped">
+				    <thead>
+				      <tr>
+				        <th>Block</th>
+				        <th>Street</th>
+				        <th>Unit</th>
+				        <th>Post</th>
+				        <th class="addr-del">Action</th>
+				      </tr>
+				    </thead>
+				    <tbody>
+						#{list items:company?.addresses, as:'address'}
+							<tr>
+					          	<td class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+					          		<div>
+					          			<p class="form-control">${address.block}</p>
+					          		</div>
+					          	</td>
+					          	<td class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+					          		<div>
+					          			<p class="form-control">${address.street}</p>
+					          		</div>
+								</td>
+								
+					          	<td class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+					          		<div>
+					          			<p class="form-control">${address.unit}</p>
+					          		</div>
+				          		</td>
+					          	<td class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+					          		<div>
+					          			<p class="form-control">${address.postCode}</p>
+					          		</div>
+					          	</td>
+					          	<td class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+					          		<div class="addr-del">
+					          			<a href="@{ProfileController.deleteAddress(address.id)}"><span class="glyphicon glyphicon-minus-sign"></span></a>
+					          		</div>
+					          	</td>
+					        </tr>
+						#{/list}
+				    </tbody>
+				</table>
+				<a id="add-addr-row"><span class="glyphicon glyphicon-plus-sign"></span></a>
+			</div>
+		</div>
+	
+		<button id="save-company-btn" class="btn btn-success" type="submit">Save</button>
+	</form>
+</div>
+
+<div class="modal fade" id="logo-edit-model" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>EDIT LOGO</h3>
+      </div>
+      <div class="modal-body">
+      	<form id="logo-form">
+      		<div id="logo-btn-wrap" class="btn btn-info">
+      			<span>Upload</span>
+      			<input id="logo-upload" class="upload" type="file" name="image">
+      		</div>
+      		<input id="logo-submit" type="submit" class="btn btn-success"/>
+      		<p id="upload-fn">
+      			<input id="fn-text" disabled="disabled" placeholder="Choose File">
+      		</p>
+      		<input type="hidden" id="crop-child" name="childId">
+      		<input type="hidden" id="crop-x" name="x">
+      		<input type="hidden" id="crop-y" name="y">
+      		<input type="hidden" id="crop-width" name="width">
+      		<input type="hidden" id="crop-height" name="height">
+      		<input type="hidden" id="crop-ratio" name="ratio">
+      	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#logo-upload").on("change", function(e){
+			$('#fn-text').val($(this).val());
+			for (var i = 0; i < e.originalEvent.srcElement.files.length; i++) {
+		        var file = e.originalEvent.srcElement.files[i];
+
+		        $('.jcrop-holder').remove();
+
+		        var img = document.createElement("img");
+		        img.setAttribute("class", "cropper");
+		        var reader = new FileReader();
+		        reader.onloadend = function() {
+		             img.src = reader.result;
+		        }
+		        reader.readAsDataURL(file);
+		        $("#upload-fn").after(img);
+				
+		        var ratio;
+		        img.onload = function(){
+		        	ratio = img.width / img.naturalWidth;
+		        	$('#crop-ratio').val(ratio);
+		        	$('.cropper').Jcrop({
+		        		aspectRatio: 1,
+		        		onChange: showCoords,
+		        		onSelect: showCoords,
+		        		bgColor: 'black',
+		                bgOpacity: .6,
+		                setSelect: [ ($('.cropper').width() / 2) - 100, 
+		                             ($('.cropper').height() / 2) - 100, 
+		                             ($('.cropper').width() / 2) + 100, 
+		                             ($('.cropper').height() / 2) + 100 
+		                           ]
+		        	});
+		        }
+		    }
+		});
+		
+		$('#logo-form').submit(function(event){
+			event.preventDefault();
+			
+			var file = document.getElementById("logo-upload");
+			var data = new FormData();
+				data.append('x', $('#crop-x').val());
+				data.append('y', $('#crop-y').val());
+				data.append('width', $('#crop-width').val());
+				data.append('height', $('#crop-height').val());
+				data.append('ratio', $('#crop-ratio').val());
+				data.append('image', file.files[0]);
+			
+			$.ajax({
+                url: "/profilecontroller/uploadCompanyLogo",
+                type: "POST",
+                data : data,
+                contentType: false,
+                processData: false,
+                success: function(response, status) {
+                	if(status == "success"){
+                		var jsonData = jQuery.parseJSON(JSON.stringify(response));
+                		$('#logo-link').css('background-image', 'url(' + jsonData.thumbnailPath + ')');
+                		$('img#logo').attr('src', jsonData.thumbnailPath);
+                		$('#logo-edit-model').modal('hide');
+                	}
+                },
+                error: function (error) {
+                	showAlertToast("Error: " + error, "alert-danger");
+                } 
+            });
+		});
+		
+	    $("#company-form").validate({
+	        rules: {
+	            "company.name": {
+	            	minlength: 1,
+	                maxlength: 20,
+	            	required:true
+	            },
+	            "company.description": {
+	            	minlength: 1,
+	            	required:true
+	            },
+	            "company.contactNo": {
+	            	required:true
+	            }
+	        },
+	        highlight: function (element) {
+	            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+	        },
+	        unhighlight: function (element) {
+	            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+	        },
+	        submitHandler: function(form) {
+	            $.ajax({
+	                url: "/ProfileController/saveCompany",
+	                type: "POST",
+	                data: $(form).serialize(),
+	                success: function(response, status) {
+	                	if(status == "success" && response == "success"){
+	                		showAlertToast("Your profile updated successfully.", "alert-success");
+	                		$('#comy-ver').css('display', 'block');
+	                	}else{
+	                		showAlertToast("Error: " + response, "alert-danger");
+	                	}
+	                	$('#save-company-btn').html("Save");
+	                },
+	                error: function(request, status, err){
+	                	showAlertToast("Error: " + err, "alert-danger");
+	                }
+                });
+	            $('#save-company-btn').html("<span class=\"glyphicon glyphicon-refresh glyphicon-spinner\"></span> Saving...");
+	         }
+	    });
+	    
+	    $('#add-addr-row').on('click', function(){
+	    	var rowCount = $('.addr-input').length;
+	    	var html = "<tr class=\"addr-input\">";
+	    	html += "<td class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">";
+	    	html += "<div><input type=\"text\" class=\"form-control\" name=\"addresses["+ rowCount +"].block\" placeholder=\"Block\"></div>";
+	    	html += "</td>";
+	    	html += "<td class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">";
+	    	html += "<div><input type=\"text\" class=\"form-control\" name=\"addresses[" + rowCount + "].street\" placeholder=\"Block\"></div>";
+	    	html += "</td>";
+	    	html += "<td class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">";
+ 	    	html += "<div><input type=\"text\" class=\"form-control\" name=\"addresses[" + rowCount + "].unit\" placeholder=\"Unit No\"></div>";
+ 	    	html += "</td>";
+ 	    	html += "<td class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">";
+ 	    	html += "<div><input type=\"text\" class=\"form-control\" name=\"addresses[" + rowCount + "].postCode\" placeholder=\"Post code\"></div>";
+ 	    	html += "</td>";
+ 	    	html += "<td class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">";
+ 	    	html += "<div class=\"addr-del\"><a href=\"\"><span class=\"glyphicon glyphicon-minus-sign\"></span></a></div>";
+ 	    	html += "</td>";
+	    	html += "</tr>"
+
+	    	$('tbody').append(html);
+	    });
+	});
+	
+	function showCoords(obj){
+		$('#crop-x').val(obj.x);
+		$('#crop-y').val(obj.y);
+		$('#crop-width').val(obj.w);
+		$('#crop-height').val(obj.h);
+	}
+</script>
+
+
+
+
+
+
+

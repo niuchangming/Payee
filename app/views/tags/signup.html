@@ -1,0 +1,114 @@
+<script type="text/javascript">
+	$(document).ready(function(){
+	    $("#signup-form").validate({
+	        rules: {
+	            password:{
+	            	minlength: 6,
+	                maxlength: 20,
+	            	required:true
+	            },
+	            confirmPassword:{	
+	            	minlength: 6,
+	                maxlength: 20,
+	            	equalTo: "#s-pwd",
+            		required:true
+	            },
+	            email:{
+	            	required:true,
+	                email:true,
+	                remote: {
+	                    url: "/SessionController/notexists",
+	                    type: 'get',
+	                    data: {
+	                        email: function() {
+	                            return $( "#s-email" ).val();
+	                        }
+	                    },
+	                }
+	            }
+	        },
+	        messages: {
+	        	email:{
+               		remote:"Email already exists."
+               	}
+            },
+	        highlight: function (element) {
+	            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+	        },
+	        unhighlight: function (element) {
+	            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+	        },
+	        submitHandler: function(form) {
+	            $.ajax({
+	                url: "/SessionController/signup",
+	                type: "POST",
+	                data: $(form).serialize(),
+	                success: function(response, status) {
+	                	if(status == "success" && response == "success"){
+	                		window.location.reload(true);
+	                	}else{
+	                		$('#signup-form .alert').text(response);
+	                		$('#signup-form .alert').addClass('appear');
+	                	}
+	                	$('#s-submit').html("Submit");
+	                },
+	                error: function(request, status, err){
+	                	$('#signup-form .alert').text("Error (" + status + "): " + err);
+                		$('#signup-form .alert').addClass('appear');
+	                }
+                });
+	            $('#s-submit').html("<span class=\"glyphicon glyphicon-refresh glyphicon-spinner\"></span> Submit...");
+	         }
+	    });
+	    
+	    $('#signup-model').on('hidden.bs.modal', function () {
+	    	clearSignupForm();
+	    });
+	    
+	    $('#signup-model').on('show.bs.modal', function () {
+	    	checkLoginState();
+	    });
+	});
+	function clearSignupForm(){
+		$('#signup-form .error').remove();
+		$('#signup-form .form-control').val('');
+		$('#signup-form .appear').removeClass('appear');
+	}
+</script>
+
+<div class="modal fade" id="signup-model" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4>Sign up</h4>
+      </div>
+      <div class="modal-body">
+      	<form id="signup-form">
+      	
+      		<div class="alert alert-danger" role="alert"></div>
+      		
+      		<div class="form-group">
+				<label for="s-email">Your email:</label>
+				<input type="email" name="email" class="form-control" id="s-email" placeholder="Enter email">
+			</div>
+			
+			<div class="form-group">
+				<label for="s_pwd">Password:</label>
+				<input type="password" name="password" class="form-control" id="s-pwd" placeholder="Password">
+			</div>
+			
+			<div class="form-group">
+				<label for="s-comfirm-pwd">Confirm:</label>
+				<input type="password" name="confirmPassword" class="form-control" id="s-comfirm-pwd" placeholder="Comfirm Password">
+			</div>
+			
+			<div class="form-group">
+				<button id="s-submit" class="btn btn-success" type="submit" >Submit</button>
+				<button class="btn btn-primary fb-login" type="button">Sign up with Facebook</button>
+			</div>
+		</form>
+      </div>
+    </div>
+  </div>
+</div>

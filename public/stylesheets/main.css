@@ -1,0 +1,317 @@
+/** Main layout **/
+
+html {
+	height:100%;
+}
+
+body {
+	left: 0;
+    margin: auto;
+    min-height: 100%;
+   	position:relative;
+   	overflow:scroll;
+   	background-color: #F1F1F1 !important;
+	-moz-transition: all 300ms;
+	-webkit-transition: all 300ms;
+	transition: all 300ms;
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+a:hover{
+	text-decoration: none;
+}
+
+textarea{
+	overflow: hidden;
+}
+
+/** alert **/
+
+.alert-danger, .alert-success{
+	width: 100%;
+	height: 49px;
+	top: -49px;
+	display: none;
+	opacity: 0;
+	text-align: center;
+	position: fixed;
+	z-index: 100;
+}
+
+.alert.appear{
+	display: inline-block;
+	opacity: 1;
+}
+
+form .alert{
+	text-align: left;
+	top: 0;
+	position: relative;
+}
+
+/** alert **/
+
+
+/** header **/
+
+#header {
+	background: #5AC8FB;
+    position: relative;
+}
+
+#header-content{
+	width: 80%;
+	height: 100%;
+	margin: 0 auto;
+}
+
+#home-link{
+	display: inline-block;
+	position: absolute;
+	color: white;
+	left: 30%;
+	top: 10px;
+	font-size: 1.5em;
+	text-decoration: none;
+}
+
+#home-link:hover{
+	color: #8E8E93;
+}
+
+#logo {
+    display: inline-block;
+    height: 49px;
+    line-height: 49px;
+    color: #fff;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+#logo span {
+    color: #f00;
+    font-size: 70%;
+}
+
+#tools {
+	height: 100%;
+	line-height: 49px;
+    list-style: none;
+    position: absolute;
+    top: 0;
+    right: 150px;
+    margin:0;
+    padding: 0;	
+}
+
+#tools > li {
+	height: 49px;
+	cursor: pointer;
+	display: inline-block;
+	margin: -1px 15px 0 15px;
+}
+
+#tools a {
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+}
+
+#tools a:hover {
+    color: #8E8E93;
+}
+
+#tools a:active { 
+    color: #1F1F21;
+}
+
+#tools span {
+    margin: 1px;
+    font-size: 16px;
+}
+
+#tools > li > a > i{
+	color: #FF4444;
+	position: absolute;
+}
+
+#tools img#avatar{
+	width: 48px;
+	height: 48px;
+	border-radius: 24px;
+}
+
+/* Start task tool bar */
+#tool-bar, #sub-header{
+	height: 64px;
+	position: relative;
+}
+
+#tool-bar{
+	width: 80%;
+	margin: auto;
+	padding: 15px 0;
+}
+
+#sub-header{
+	padding:15px;
+}
+
+#create-task-btn{
+	display: inline-block;
+}
+
+#search-bar{
+	display: inline-block;
+	position: absolute;
+	right: 0px;
+}
+
+#search-input{
+	width: 320px;
+	height: 34px;
+	padding: 0 24px 0px 12px;
+	border: transparent;
+}
+
+#search-form{
+	display: inline-block;
+}
+
+#search-form > a{
+	color: #5AC8FB;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 34px;
+	height: 34px;
+	text-align: center;
+	line-height: 34px;
+	text-decoration: none;
+}
+
+#search-form > a:hover{
+	background-color: #ccc;
+}
+
+#search-form > a:active{
+	background-color: #8E8E93;
+}
+
+#tag-form{
+	display: inline-block;
+	margin-right: 15px;
+}
+
+#tag-menu{
+	list-style-type: none;
+}
+
+#tag-menu li{
+	padding: 5px 10px;
+	display: inline-block;
+}
+
+#tag-menu li.active{
+	border-radius: 17px;
+	background-color: #FF4444;
+}
+
+#tag-menu li.active > a, #tag-menu li.active > a:hover{
+	color: white;
+}
+
+#tag-menu li > a{
+	color: #FF4444;
+	font-size: 1.2em;
+	text-decoration: none;
+}
+
+#tag-menu li > a:hover{
+	color: #CC0000;
+}
+
+/* End task tool bar */
+
+/** Form **/
+
+.error{
+	color: #FF4444;
+}
+
+/** Form **/
+#main {
+	width: 100%;
+	height: 100%;
+	min-height: 100%;
+    padding-bottom:49px;
+    overflow: auto;
+}
+
+/** Footer **/
+
+/** Button Spinner **/
+.glyphicon-spinner {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+/** Button Spinner **/
+#footer{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    padding-top: 15px;
+    height:49px;
+    color: #8E8E93;
+    font-size: 12px;
+    text-align: center;
+}
+
+#slide-menu-btn{
+	display: none;
+	position: absolute;
+	top: 14px;
+	font-size: 20px;
+	left: 24px;
+	color: white;
+}
+
+#slide-menu-btn:hover{
+	color: #8E8E93;
+}
+
+@media screen and (max-width :876px){
+	#logo{
+		margin: 0 auto;
+		text-align: center;
+		display: block;
+	}
+	
+	#home-link, #tools, #tool-bar{
+		display: none;
+	}
+	
+	#content{
+		width: 100% !important;
+	}
+	
+	#slide-menu-btn{
+		display: inline;
+	}
+	
+}
+

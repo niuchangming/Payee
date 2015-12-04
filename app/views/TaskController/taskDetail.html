@@ -1,0 +1,116 @@
+#{extends 'main.html' /}
+#{set title:'Task Detail' /}
+
+<link href="@{'/public/stylesheets/taskdetail.css'}" rel="stylesheet">
+<script src="@{'/public/javascripts/jquery.countdown.js'}" type="text/javascript"></script>
+<script type="text/javascript">
+	$(function(){
+		$('#timer').countdown('${task.endDate}', function(event) {
+			var $this = $(this).html(event.strftime('<div><span>%-D</span><span>%H:%M:%S</span></div><div>DAYS LEFT</div>'));
+		});
+	}); 
+	
+	function fbShare(){
+		FB.ui({
+			method: 'share',
+			href: '@{JobController.viewProduct(job?.token)}'
+		});
+	}
+	
+	function addJob(id){
+		$.ajax({
+	        url: "/JobController/addJob",
+	        type: "POST",
+	        data: {
+	        	taskId: id
+			},
+	        success: function(response, status) {
+	        	if(status == "success" && response > 0){
+	        		window.location.reload(true);
+	        	}else{
+	        		showAlertToast("Error: " + response, "alert-danger");
+	        	}
+	        },
+	        error: function(request, status, err){
+	           	showAlertToast("Error: " + err, "alert-danger");
+	           }
+	    });
+	}
+ </script>
+
+<page size="A4">
+	<h3 id="task-title">${task.title}</h3>
+	<div id="task-header">
+		<ul>
+			<li id="award">
+				<div id="circle-outer">
+					<div id="circle-inner">
+						#{if task.rewards?.iterator()?.next()?.rewardType.getName() == "free"} 
+							Free 
+						#{/if}
+						#{else}
+							${(int)task.rewards?.iterator()?.next()?.value * 100}%
+						#{/else}
+					</div>
+				</div>
+				
+				<div id="share-point">
+					#{if task.rewards?.iterator()?.next()?.rewardType.getName() == "discount"}
+						 discount by ${task.rewards?.iterator()?.next()?.minShares} shares 
+					#{/if}
+					#{elseif task.rewards?.iterator()?.next()?.rewardType.getName() == "commission"}
+						commission 
+					#{/elseif}
+					#{if task.rewards?.iterator()?.next()?.rewardType.getName() == "free"} 
+						by ${task.rewards?.iterator()?.next()?.minShares} shares 
+					#{/if}
+				</div>
+			</li>
+			<li id="timer"></li>
+			
+			#{if job}
+				<li id="share">
+					<div>
+						<a class="sharebutton twitter">
+							<span>Twitter</span>
+						</a>
+						<a class="sharebutton fb" onclick="fbShare();">
+							<span>Facebook</span>
+						</a>
+					</div>
+				</li>
+			#{/if}
+			#{else}
+				<li id="add-job">
+					<a class="btn-3 btn-3b glyphicon glyphicon-plus" onclick="#{if user}addJob(${task?.id});#{/if}#{else}showAlertToast('Error: You have to login first.', 'alert-danger');#{/else}">Get this job</a>
+				</li>
+			#{/else}
+		</ul>
+		#{if task?.images?.size() > 0}
+			<div id="task-img" style="background-image: url('@{TaskController.getImage(task?.images?.iterator()?.next()?.id)}');"></div>
+		#{/if}
+	</div>
+	#{if job}
+		<div id="copy-link">
+			<p><span class="glyphicon glyphicon-link"></span>Copy this link and share with your friends</p>
+			<input id="share-link" class="form-control" value="${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token.urlEncode()}">
+		</div>
+	#{/if}
+	<div id="task-desc" class="task-blk">
+		<h3>Task Description</h3>
+		${task.description.raw()}
+	</div>
+	<div id="task-award" class="task-blk">
+		<h3>Reward Insruction</h3>
+		${task.rewards?.iterator()?.next().instruction.raw()}
+	</div>
+	<div id="product-name" class="task-blk">
+		<h3>Product Description</h3>
+		${task.products?.iterator()?.next()?.description.raw()}
+	</div>
+	<div id="task-image" class="task-blk">
+		#{list items:task?.images, as:'image'}
+		   <img class="task-tile" src="@{TaskController.getImage(image.id)}"/>
+		#{/list}
+	</div>
+</page>

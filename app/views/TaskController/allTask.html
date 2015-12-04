@@ -1,0 +1,83 @@
+#{extends 'TaskController/taskBase.html' /}
+#{set title:'All my task' /}
+#{set page_index:'1' /}
+
+<link href="@{'/public/stylesheets/alltask.css'}" rel="stylesheet">
+
+<script type="text/javascript">
+	function deleteTask(e, id){
+		$.ajax({
+            url: "/TaskController/deleteTask",
+            type: "POST",
+            data: {
+            	taskId: id
+            },
+            success: function(response, status) {
+            	if(status == 'success' && response == id){
+            		window.location.reload(true);
+            	}else{
+            		showAlertToast("Delete failed, please refresh the page and try again.", "alert-danger");
+            		e.innerHTML = "Delete";
+            	}
+            },
+            error: function(err){
+            	showAlertToast("Error: " + err, "alert-danger");
+            	e.innerHTML = "Delete";
+            }
+        });
+		e.innerHTML = "<span class=\"glyphicon glyphicon-refresh glyphicon-spinner\"></span>";
+	}
+	
+</script>
+
+<table class="table table-striped">
+    <thead>
+      <tr class="row">
+        <th>#</th>
+        <th>Title</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Status</th>
+        <th>Detail</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+    	%{
+			int i = 1;
+		}%
+   		#{list items:tasks, as:'task'}
+			<tr id="task-${task?.id}" class="row">
+	          <th class="col-xs-1 col-sm-1 col-md-1 col-lg-1" scope="row"><div>${i}</div></th>
+	          <td class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><div>${task?.title}</div></td>
+	          <td class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><div>${task?.startDate?.format('dd-MMM-yyyy')}</div></td>
+	          <td class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><div>${task?.endDate?.format('dd-MMM-yyyy')}</div></td>
+	          <td class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><div>#{if task?.isPubished} Published #{/if}#{else} Review #{/else}</div></td>
+	          <td class="col-xs-1 col-sm-1 col-md-1 col-lg-1"><a class="btn btn-info task-detail" href="@{TaskController.taskDetail(task?.id)}">Detail</a></td>
+	          <td class="col-xs-1 col-sm-1 col-md-1 col-lg-1"><a class="btn btn-warning task-edit" href="@{TaskController.taskForm(task?.id)}">Edit</a></td>
+	          <td class="col-xs-1 col-sm-1 col-md-1 col-lg-1"><a class="btn btn-danger task-del" onClick="deleteTask(this, ${task?.id})">Delete</a></td>
+	        </tr>
+	        %{i++}%
+		#{/list}
+    </tbody>
+</table>
+
+#{pager model:"task", total:totalCount, currentPage:pageIndex, pageCount:10/}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

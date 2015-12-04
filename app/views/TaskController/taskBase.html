@@ -1,0 +1,48 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+<link rel="stylesheet" href="@{'/public/stylesheets/taskbase.css'}">
+
+<div id="sub-header">
+	#{if user.role == models.Role.MERCHANT}
+		<a id="create-task-btn" class="btn btn-primary" data-toggle="modal" data-target="#createtask-model">Create Task</a>
+	#{/if}
+	#{else}
+		<a id="create-task-btn" class="btn btn-primary" data-toggle="modal" data-target="#companyinforequired-model">Create Task</a>
+	#{/else}
+	
+	#{if showSaveBtn}
+		<button id="save-task-btn" type="submit" form="task-form" data-toggle="tooltip" title="" class="btn btn-success" data-original-title="Save"><i class="fa fa-save"></i></button>
+	#{/if}
+</div>
+
+<div id="side-nav">
+    <ul class="nav">
+        <li id="all-task" class=""><a href="@{TaskController.allTask(0, 10)}">All my tasks</a></li>
+        <li id="my-job" class=""><a href="@{JobController.myJobs(0, 10)}">My jobs</a></li>
+        <li id="my-award" class=""><a href="@{AwardController.myAwards(0, 10)}">My awards</a></li>
+    </ul>
+</div>
+
+<div id="task-body">
+	 #{doLayout /}
+	 #{createtask /}
+	 #{companyinforequired /}
+</div>
+
+<script type="text/javascript">
+	$(function(){
+    	var pageIndex = ${page_index};
+    	if(pageIndex == 0){
+    		$('#create-task').addClass('active');
+    	}else if(pageIndex == 1){
+    		$('#all-task').addClass('active');
+    	}else if(pageIndex == 2){
+    		$('#my-job').addClass('active');
+    	}else if(pageIndex == 3){
+    		$('#my-award').addClass('active');
+    	}else if(pageIndex == 4){
+    		$('#setting').addClass('active');
+    	}
+    });
+</script>

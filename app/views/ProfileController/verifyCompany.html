@@ -1,0 +1,106 @@
+#{extends 'main.html' /}
+#{set title:'Company Information' /}
+
+<link rel="stylesheet" href="@{'/public/stylesheets/company.css'}">
+<script src="@{'/public/javascripts/plupload/plupload.full.min.js'}" type="text/javascript"></script>
+
+<div id="tool-bar"></div>
+
+<div id="side-nav">
+    <ul class="nav">
+      <li id="profile" class=""><a href="@{ProfileController.profile()}">Edit Profile</a></li>
+      <li id="reset-pwd" class=""><a href="@{ProfileController.resetPassword()}">Reset password</a></li>
+      <li id="Company" class="active"><a href="@{ProfileController.company()}">Company Info</a></li>
+    </ul>
+</div>
+
+<div id="verify-gp">
+	<h3>Verification of your company</h3>
+	<div id="note-gp">
+		<img src="../../public/images/note.png" />
+		Notes
+	</div>
+	
+	<ul>
+		<li>Each company have to be verified before allowed to create task and publish their product.</li>
+		<li>The processing time is 3-5 working days once you submit the required information</li>
+		<li>The 'verified status' validate duration is 1 year since the verification approved</li>
+	</ul>
+	
+	<form id="ver-form">
+		<h3>Upload Your IC Photocopy</h3>
+		<input id="comyid" type="hidden" value="${company.id}" name="companyId">
+		<div id="ic-gp">
+			<div id="ic-front" class="ic">
+				<input id="front-img" type="file" name="frontIC" onChange="fileInputChanged(this)" accept="image/jpeg, image/png">
+				<p>Upload Your IC (Front)</p>
+		    </div>
+		    
+		    <div id="ic-back" class="ic">
+		    	<input id="back-img" type="file" name="backIC" onChange="fileInputChanged(this)" accept="image/jpeg, image/png">
+				<p>Upload Your IC (Back)</p>
+		    </div>
+		</div>
+		
+	    <div id="bizfile-gp">
+	    	<input id="bizfile-upload" type="file" name="bizFile" accept="application/pdf">
+	    </div>
+	    
+	    <button id="upload-btn" class="btn btn-success" type="submit">Submit</button>
+	</form>	
+	
+</div>
+
+<script type="text/javascript">
+	function fileInputChanged (e){
+		var files = !!e.files ? e.files : [];
+        if (!files.length || !window.FileReader) return; 
+        
+        if (/^image/.test( files[0].type)){ 
+        	var reader = new FileReader(); 
+            reader.readAsDataURL(files[0]); 
+            reader.onloadend = function(){
+            	$(e).parent().css("background-image", "url("+this.result+")");
+            	$(e).parent().find('p').remove();
+            }
+        }
+	}
+	
+	$(function(){
+		var frontICObj = document.getElementById('front-img');
+		var backICObj = document.getElementById('back-img');
+		var bizFileObj = document.getElementById('bizfile-upload');
+		
+		$("#ver-form").validate({
+	        submitHandler: function(form) {
+	        	var formData = new FormData();
+	        	formData.append('frontIC', frontICObj.files[0]);
+	        	formData.append('backIC', backICObj.files[0]);
+	        	formData.append('bizFile', bizFileObj.files[0]);
+	        	formData.append('companyId', $('#comyid').val());
+	        	
+	            $.ajax({
+	                url: "/ProfileController/verifyUpload",
+	                type: "POST",
+	                data: formData,
+	                enctype: 'multipart/form-data',
+	                processData: false,  
+	                contentType: false,
+	                success: function(response, status) {
+	                	if(status == "success" && response == "success"){
+	                		showAlertToast("Success. Please wait 3-5 working days for us to verify.", "alert-success");
+	                		$('#upload-btn').remove();
+	                	}else{
+	                		showAlertToast("Error: " + response, "alert-danger");
+	                	}
+	                	$('#upload-btn').html("Submit");
+	                },
+	                error: function(request, status, err){
+	                	showAlertToast("Error: " + err, "alert-danger");
+	                }
+                });
+	            $('#upload-btn').html("<span class=\"glyphicon glyphicon-refresh glyphicon-spinner\"></span> Saving...");
+	         }
+	    });
+	});
+</script>

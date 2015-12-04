@@ -1,0 +1,90 @@
+#reward-list{
+	width: 100%;
+	list-style-type: none;
+	padding: 15px 0;
+}
+
+#reward-list > li{
+	width: 224px;
+	color: white;
+	display: inline-block;
+	margin: 10px;
+}
+
+.reward-header{
+	width: 100%;
+	height: 42px;
+	text-align: center;
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	background-color: #0099CC;
+}
+
+.reward-header > p{
+	width:auto;
+	line-height: 24px;
+	font-size: 1.15em;
+	opacity: .8;
+	margin: auto;
+	display: table;
+	position: relative;
+}
+
+.reward-header span {
+	line-height: 18px;
+	font-size: 0.6em;
+	display: block;
+	left: 0;
+  	position: absolute;
+}
+
+.reward-content{
+	width: 100%;
+	padding: 10px;
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	background-color:#5AC8FB;	
+}
+
+.reward-content span{
+	font-size: 1.25em;
+	font-weight: 500;
+	color: #FF4444;
+}
+
+.exp-gp{
+	margin-top: 15px;
+	font-size: 80%;
+	display: inline-block;
+}
+
+.exp-lbl{
+	padding: 4px;
+	display:inline;
+	color: #5AC8FB;
+	border-bottom-left-radius: 6px;
+	border-top-left-radius: 6px;
+	border: 1px solid white;
+	background-color: white;
+}
+
+.exp-val{
+	padding: 4px;
+	display: inline;
+	margin-left: -5px;
+	border-bottom-right-radius: 6px;
+	border-top-right-radius: 6px;
+	border: 1px solid white;	
+}
+
+.reward-action{
+	margin-top: 8px;
+	padding: 4px 6px;	
+	font-size: 0.9em;
+	float: right;
+}
+
+
+
+
+

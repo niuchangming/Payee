@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>#{get 'title' /}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/bootstrap/bootstrap.min.css'}">
+        <link rel="stylesheet" href="@{'/public/stylesheets/main.css'}">
+        <link href="@{'/public/stylesheets/productdetail.css'}" rel="stylesheet">
+	
+		<script src="@{'/public/javascripts/jquery-2.1.1.min.js'}" type="text/javascript"></script>
+		<script src="@{'/public/javascripts/jquery.countdown.js'}" type="text/javascript"></script>
+		<script src="@{'/public/javascripts/qrcode/jquery.qrcode.min.js'}" type="text/javascript"></script>
+		<script type="text/javascript">
+			$(function(){
+				$('#qrcode').qrcode({width: 240,height: 240,text: "${qrcode}"});
+			}); 
+		 </script>
+    </head>
+    <body>
+		<page size="A4">
+			<h3 id="task-title">${task.products.iterator().next().productName}</h3>
+			<div id="task-header">
+				<div class="row">
+					#{if task?.images?.size() > 0}
+						<div id="task-img" class="col col-xs-8 col-sm-8 col-md-8" style="background-image: url('@{TaskController.getImage(task?.images?.iterator()?.next()?.id)}');"></div>
+					#{/if}
+					<ul class="col col-xs-4 col-sm-4 col-md-4">
+						#{if task.rewards.iterator().next().rewardType.getName() == 'commission'}
+							<li id="qrcode">
+							</li>
+							<li id="price">  
+								<div>
+									<span class="real">S$ ${task.products.iterator().next().price}</span><br/>
+									<span class="off">S$ ${task.products.iterator().next().coupons.iterator().next().value}</span><span class="bubble"> Off by merchant to scan</span>
+								</div>
+							</li>
+						#{/if}
+						#{else}
+							<li id="price">  
+								<span>S$ ${task.products.iterator().next().price}</span>
+							</li>
+						#{/else}
+					</ul>
+				</div>
+			</div>
+			<div id="task-desc" class="task-blk">
+				<h3>${task.products.iterator().next().productName}</h3>
+				${task.products.iterator().next().description.raw()}
+			</div>
+			#{if task.rewards.iterator().next().rewardType.getName() == 'commission'}
+				<div id="task-award" class="task-blk">
+					<h3>Coupon Insruction</h3>
+					${task.products.iterator().next().coupons.iterator().next().instruction.raw()}
+				</div>
+			#{/if}
+			<div id="task-image" class="task-blk">
+				#{list items:task?.images, as:'image'}
+				   <img class="task-tile" src="@{TaskController.getImage(image.id)}"/>
+				#{/list}
+			</div>
+		</page>
+    </body>
+</html>

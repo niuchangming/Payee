@@ -1,0 +1,54 @@
+#{extends 'TaskController/taskBase.html' /}
+#{set title:'All my awards' /}
+#{set page_index:'3' /}
+
+<link href="@{'/public/stylesheets/myaward.css'}" rel="stylesheet">
+
+<ul id="reward-list">
+	#{list items:jobs, as:'job'}
+		%{
+			task = job.task;
+			reward = task.rewards.iterator().next();
+		}%
+		#{if reward.rewardType.getName() == "commission" || job.accesses.size() >= reward.minShares}
+			<li class="reward-item">
+				<div class="reward-header">
+					<p>Reward
+						#{if reward.rewardType.getName() != "free"}
+							${(int)reward.value * 100}%
+						#{/if}
+						${reward.rewardType.getName()}
+						<span>From ${task.user.companys?.iterator()?.next()?.name}</span>
+					</p>	
+				</div>
+				<div class="reward-content">
+					%{
+						voucherValue = 0;
+					}%
+					#{if reward.rewardType.getName() == "commission"}
+						%{
+							voucherValue = job.deals.size() * job.task.products.iterator().next().price * job.task.rewards.iterator().next().value;
+						}%
+						<p>Currently, you earn <span>S$ #{if voucherValue > 0} ${voucherValue.format('.00')} #{/if}#{else}0#{/else}</span> ${reward.rewardType.getName()} for the product.</p>
+					#{/if}
+					#{elseif reward.rewardType.getName() == "discount"}
+						%{
+							voucherValue = reward.value;
+						}%
+						<p>You have got <span>${(int)voucherValue * 100}%</span> ${reward.rewardType.getName()} for the product.</p>
+					#{/elseif}
+					#{else}
+						<p>Currently, you have got a <span>Free</span>reward.</p>
+					#{/else}
+					<div class="exp-gp">
+						<p class="exp-lbl">Exp.</p>
+						<p class="exp-val">${reward.expireDate.format('dd-MMM-yy')}</p>
+					</div>
+					<a class="btn btn-success reward-action" href="javascript:window.open('@{JobController.voucher(job.id, voucherValue)}', 'Voucher', 'width=640,height=360');">Get now !</a>
+				</div>
+			</li>
+		#{/if}
+	#{/list}
+</ul>
+
+#{pager model:"reward", total:totalCount, currentPage:pageIndex, pageCount:10/}

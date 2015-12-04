@@ -1,0 +1,255 @@
+#{extends 'main.html' /}
+#{set title:'Profile' /}
+
+<link rel="stylesheet" href="@{'/public/stylesheets/profile.css'}">
+<link href="@{'/public/stylesheets/jcrop/jquery.Jcrop.min.css'}" rel="stylesheet" media="screen">
+<script src="@{'/public/javascripts/jcrop/jquery.Jcrop.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+
+<div id="tool-bar"></div>
+
+<div id="side-nav">
+    <ul class="nav">
+      <li id="profile" class="active"><a href="#">Edit Profile</a></li>
+      #{if user instanceof models.NormalUser}
+      	<li id="reset-pwd" class=""><a href="@{ProfileController.resetPassword()}">Reset password</a></li>
+      #{/if}
+      <li id="Company" class=""><a href="@{ProfileController.company()}">Company Info</a></li>
+    </ul>
+</div>
+
+<div id="profile-content">
+	<h3>Upate your profile</h3>
+	
+	<a id="avatar-link" style="background-image: url('@{ProfileController.showAvatar(user.id)}');" data-toggle="modal" data-target="#avr-edit-model"></a>
+
+	<form id="profile-form">
+		<div class="form-group">
+			<div class="form-label">
+				<label for="first-name">First name:</label>
+			</div>
+			<div id="firstname-wrap" class="form-input">
+				<input type="text" class="form-control" name="profile.firstName" id="first-name" placeholder="First name" value="${profile?.firstName}">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="form-label">
+				<label for="last-name">Last name:</label>
+			</div>
+			<div id="lastname-wrap" class="form-input">
+				<input type="text" id="last-name" class="form-control" name="profile.lastName" placeholder="Last name" value="${profile?.lastName}">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="form-label">
+				<label for="phone-no">Phone number:</label>
+			</div>
+			<div id="phone-wrap" class="form-input">
+				<input id="phone-no" type="text" class="form-control" name="profile.phone" placeholder="Phone number" value="${profile?.phone}">
+			</div>
+		</div>
+		
+		<div id="addr-gp" class="form-group">
+			<div class="form-label">
+				<label>Address:</label>
+			</div>
+			<div class="form-input">
+				<input id="blk" type="text" class="form-control" name="profile.addresses[0].block" placeholder="Block" value="#{if profile?.addresses?.iterator()?.hasNext()} ${profile?.addresses?.iterator()?.next()?.block} #{/if}">
+				<input id="street" type="text" class="form-control" name="profile.addresses[0].street" placeholder="Street" value="#{if profile?.addresses?.iterator()?.hasNext()} ${profile?.addresses?.iterator()?.next()?.street} #{/if}">
+				<input id="unit" type="text" class="form-control" name="profile.addresses[0].unit" placeholder="Unit No" value="#{if profile?.addresses?.iterator()?.hasNext()} ${profile?.addresses?.iterator()?.next()?.unit} #{/if}">
+				<input id="post" type="text" class="form-control" name="profile.addresses[0].postCode" placeholder="Post code" value="#{if profile?.addresses?.iterator()?.hasNext()} ${profile?.addresses?.iterator()?.next()?.postCode} #{/if}">
+			</div>
+		</div>
+		
+		<button id="save-profile-btn" class="btn btn-success" type="submit">Save</button>
+	</form>
+</div>
+
+<div class="modal fade" id="avr-edit-model" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>EDIT AVATAR</h3>
+      </div>
+      <div class="modal-body">
+      	<form id="avatar-form">
+      		<div id="avr-btn-wrap" class="btn btn-info">
+      			<span>Upload</span>
+      			<input id="avatar-upload" class="upload" type="file" name="image">
+      		</div>
+      		<input id="avr-submit" type="submit" class="btn btn-success"/>
+      		<p id="upload-fn">
+      			<input id="fn-text" disabled="disabled" placeholder="Choose File">
+      		</p>
+      		<input type="hidden" id="crop-child" name="childId">
+      		<input type="hidden" id="crop-x" name="x">
+      		<input type="hidden" id="crop-y" name="y">
+      		<input type="hidden" id="crop-width" name="width">
+      		<input type="hidden" id="crop-height" name="height">
+      		<input type="hidden" id="crop-ratio" name="ratio">
+      	</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		
+		$("#avatar-upload").on("change", function(e){
+			$('#fn-text').val($(this).val());
+			for (var i = 0; i < e.originalEvent.srcElement.files.length; i++) {
+		        var file = e.originalEvent.srcElement.files[i];
+
+		        $('.jcrop-holder').remove();
+
+		        var img = document.createElement("img");
+		        img.setAttribute("class", "cropper");
+		        var reader = new FileReader();
+		        reader.onloadend = function() {
+		             img.src = reader.result;
+		        }
+		        reader.readAsDataURL(file);
+		        $("#upload-fn").after(img);
+				
+		        var ratio;
+		        img.onload = function(){
+		        	ratio = img.width / img.naturalWidth;
+		        	$('#crop-ratio').val(ratio);
+		        	$('.cropper').Jcrop({
+		        		aspectRatio: 1,
+		        		onChange: showCoords,
+		        		onSelect: showCoords,
+		        		bgColor: 'black',
+		                bgOpacity: .6,
+		                setSelect: [ ($('.cropper').width() / 2) - 100, 
+		                             ($('.cropper').height() / 2) - 100, 
+		                             ($('.cropper').width() / 2) + 100, 
+		                             ($('.cropper').height() / 2) + 100 
+		                           ]
+		        	});
+		        }
+		    }
+		});
+		
+		$('#avatar-form').submit(function(event){
+			event.preventDefault();
+			
+			var file = document.getElementById("avatar-upload");
+			var data = new FormData();
+				data.append('x', $('#crop-x').val());
+				data.append('y', $('#crop-y').val());
+				data.append('width', $('#crop-width').val());
+				data.append('height', $('#crop-height').val());
+				data.append('ratio', $('#crop-ratio').val());
+				data.append('image', file.files[0]);
+			
+			$.ajax({
+                url: "/profilecontroller/uploadAvatar",
+                type: "POST",
+                data : data,
+                contentType: false,
+                processData: false,
+                success: function(response, status) {
+                	if(status == "success"){
+                		var jsonData = jQuery.parseJSON(JSON.stringify(response));
+                		$('#avatar-link').css('background-image', 'url(' + jsonData.thumbnailPath + ')');
+                		$('img#avatar').attr('src', jsonData.thumbnailPath);
+                		$('#avr-edit-model').modal('hide');
+                	}
+                },
+                error: function (error) {
+                	showAlertToast("Error: " + error, "alert-danger");
+                } 
+            });
+		});
+		
+	    $("#profile-form").validate({
+	        rules: {
+	            "profile.firstName": {
+	            	minlength: 1,
+	                maxlength: 20,
+	            	required:true
+	            },
+	            "profile.lastName": {
+	            	minlength: 1,
+	                maxlength: 20,
+	            	required:true
+	            },
+	            "profile.address":{
+	            	required: true
+	            },
+	            "profile.phone":{
+	            	required: true
+	            },
+	            "profile.postCode":{
+	            	required: true,
+	            	number:true
+	            }
+	        },
+	        highlight: function (element) {
+	            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+	        },
+	        unhighlight: function (element) {
+	            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+	        },
+	        submitHandler: function(form) {
+	            $.ajax({
+	                url: "/ProfileController/saveProfile",
+	                type: "POST",
+	                data: $(form).serialize(),
+	                success: function(response, status) {
+	                	if(status == "success" && response == "success"){
+	                		showAlertToast("Your profile updated successfully.", "alert-success");
+	                	}else{
+	                		showAlertToast("Error: " + response, "alert-danger");
+	                	}
+	                	$('#save-profile-btn').html("Save");
+	                },
+	                error: function(request, status, err){
+	                	showAlertToast("Error: " + err, "alert-danger");
+	                }
+                });
+	            $('#save-profile-btn').html("<span class=\"glyphicon glyphicon-refresh glyphicon-spinner\"></span> Saving...");
+	         }
+	    });
+	});
+	
+	function showCoords(obj){
+		$('#crop-x').val(obj.x);
+		$('#crop-y').val(obj.y);
+		$('#crop-width').val(obj.w);
+		$('#crop-height').val(obj.h);
+	}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

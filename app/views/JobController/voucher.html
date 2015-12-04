@@ -1,0 +1,44 @@
+<link href="@{'/public/stylesheets/voucher.css'}" rel="stylesheet">
+<script src="@{'/public/javascripts/jquery-2.1.1.min.js'}" type="text/javascript"></script>
+<script src="@{'/public/javascripts/qrcode/jquery.qrcode.min.js'}" type="text/javascript"></script>
+<script type="text/javascript">
+$(function(){
+	$('#qrcode').qrcode({width: 160,height: 160,text: "${voucher.job.token}"});
+	$('#print').click(function(){
+	     window.print();
+	});
+}); 
+</script>
+		 
+<div id="voucher-body">
+	<div id="reward">
+		<p id="exp-lbl">Expire date: ${voucher.reward.expireDate.format('dd-MMM-yy')}</p>
+		<div id="value">
+			#{if voucher.reward.rewardType.getName() == "commission"}
+				S$ <span>${voucher.value}</span>
+			#{/if}
+			#{elseif voucher.reward.rewardType.getName() == "discount"}
+				${(int)voucher.value * 100}% discount
+			#{/elseif}
+			#{else}
+				Free
+			#{/else}
+		</div>
+		<div id="qrcode"></div>
+	</div>
+	<div id="term">
+		<div id="term-content">
+			<p class="title">Term & Condition</p>
+			${voucher.reward.instruction.raw()}
+		</div>
+		<div id="addr-print">
+			<a id="print">print</a>
+			<div id="addr">
+				<p>Collect Address</p>
+				<p>Woodlands DR 50<p>
+				<p>$#09-78<p>
+				<p>4793023<p>
+			</div>
+		</div>
+	</div>
+</div>

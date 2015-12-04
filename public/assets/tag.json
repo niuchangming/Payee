@@ -1,0 +1,166 @@
+[
+	{
+		"name":"Food",
+		"childrenTags":
+		[
+			{
+				"name":"Buffet"
+			},
+			{
+				"name":"Steamboat"
+			},
+			{
+				"name":"BBQ"
+			},
+			{
+				"name":"Seafood"
+			},
+			{
+				"name":"Crab"
+			},
+			{
+				"name":"Korean"
+			},
+			{
+				"name":"Sushi"
+			},
+			{
+				"name":"Japan"
+			},
+			{
+				"name":"Ramen"
+			},
+			{
+				"name":"Pizza"
+			},
+			{
+				"name":"Gelato"
+			},
+			{
+				"name":"Durian"
+			},
+			{
+				"name":"Dim Sum"
+			},
+			{
+				"name":"Cake"
+			},
+			{
+				"name":"Thai"
+			},
+			{
+				"name":"Tarts"
+			},
+			{
+				"name":"Western"
+			},
+			{
+				"name":"Fast Food"
+			},
+			{
+				"name":"India"
+			},
+			{
+				"name":"Burger"
+			},
+			{
+				"name":"Soup"
+			},
+			{
+				"name":"Drink"
+			}
+		]
+	},
+	{
+		"name":"Travel",
+		"childrenTags":
+		[
+			{
+				"name":"Air Ticket"
+			},
+			{
+				"name":"Hotel"
+			},
+			{
+				"name":"Package"
+			},
+			{
+				"name":"Admission"
+			},
+			{
+				"name":"City Tour"
+			},
+			{
+				"name":"Landscap"
+			},
+			{
+				"name":"Beach"
+			},
+			{
+				"name":"Island"
+			},
+			{
+				"name":"Cruise"
+			}
+		]
+	},
+	{
+		"name":"Beauty",
+		"childrenTags":
+		[
+			{
+				"name":"Message"
+			},
+			{
+				"name":"Slimming"
+			},
+			{
+				"name":"Facial"
+			},
+			{
+				"name":"Hair"
+			},
+			{
+				"name":"Eyelash"
+			},
+			{
+				"name":"Eyebrow"
+			},
+			{
+				"name":"Makeover"
+			},
+			{
+				"name":"Nails"
+			}
+		]
+	}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

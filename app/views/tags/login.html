@@ -1,0 +1,89 @@
+<script type="text/javascript">
+	$(document).ready(function(){
+	    $("#login-form").validate({
+	        rules: {
+	            password:{
+	            	minlength: 6,
+	                maxlength: 20,
+	            	required:true
+	            },
+	            email:{
+	            	required:true,
+	                email:true
+	            }
+	        },
+	        highlight: function (element) {
+	            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+	        },
+	        unhighlight: function (element) {
+	            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+	        },
+	        submitHandler: function(form) {
+	            $.ajax({
+	                url: "/SessionController/login",
+	                type: "POST",
+	                data: $(form).serialize(),
+	                success: function(response, status) {
+	                	if(status == "success" && response == "success"){
+	                		window.location.reload(true);
+	                	}else{
+	                		$('#login-form .alert').text(response);
+	                		$('#login-form .alert').addClass('appear');
+	                	}
+	                	$('#l-submit').html("Submit");
+	                },
+	                error: function(request, status, err){
+	                	$('#login-form .alert').text("Error (" + status + "): " + err);
+                		$('#login-form .alert').addClass('appear');
+	                }
+                });
+	            $('#l-submit').html("<span class=\"glyphicon glyphicon-refresh glyphicon-spinner\"></span> Submit...");
+	         }
+	    });
+	    
+	    $('#login-model').on('hidden.bs.modal', function () {
+	    	clearLoginForm();
+	    });
+	    
+	    $('#login-model').on('show.bs.modal', function() {
+	    	checkLoginState();
+	    })
+	});
+	
+	function clearLoginForm(){
+		$('#login-form .error').remove();
+		$('#login-form .form-control').val('');
+		$('#login-form .appear').removeClass('appear');
+	}
+	
+</script>
+
+<div class="modal fade" id="login-model" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4>Log in</h4>
+      </div>
+      <div class="modal-body">
+      	<form id="login-form">
+		    <div class="alert alert-danger" role="alert">Login error</div>
+      		<div class="form-group">
+				<label for="l-email">Your email:</label>
+				<input type="email" name="email" class="form-control" id="l-email" placeholder="Enter email">
+			</div>
+			
+			<div class="form-group">
+				<label for="l_pwd">Password:</label>
+				<input type="password" name="password" class="form-control" id="l-pwd" placeholder="Password">
+			</div>
+			
+			<div class="form-group">
+				<button id="l-submit" class="btn btn-success" type="submit">Submit</button>
+				<button class="btn btn-primary fb-login" type="button">Log in with Facebook</button>
+			</div>
+		</form>
+      </div>
+    </div>
+  </div>
+</div>

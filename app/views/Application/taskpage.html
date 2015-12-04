@@ -1,0 +1,30 @@
+#{list items:tasks, as:'task'}
+	<div class="col col-xs-12 col-sm-6 col-md-3 task-cell">
+			%{
+				reward = task.rewards.iterator().next();
+			}%
+			<a class="tile" href="@{TaskController.taskDetail(task.id)}" target="_blank" style="background-image: url('#{if task?.images.size() > 0}${task?.images?.iterator()?.next()?.thumbnailPath}#{/if}#{else}../../public/images/default_image.jpg#{/else}');">
+				<div class="item-info">
+					<span class="title">${task.title}</span>
+					<p class="reward">
+				  		#{if reward.rewardType.getName() == "free"}
+				  			Free
+				  		#{/if}
+				  		#{elseif reward.rewardType.getName() == "discount"}
+				  			${(int)reward.value * 100}% <span>Discount</span>
+				  		#{/elseif}
+				  		#{elseif reward.rewardType.getName() == "commission"}
+				  			${(int)reward.value * 100}% <span>Commission</span>
+				  		#{/elseif}
+			  		</p>
+				</div>
+			</a>
+	  	
+	  	<a class="add-job-btn glyphicon glyphicon-plus-sign" onclick="#{if user}addJob(${task?.id});#{/if}#{else}showAlertToast('Error: You have to login first.', 'alert-danger');#{/else}"></a>
+	</div>
+#{/list}
+#{if offset % 10 == 0}
+	<a class="next-link" href="@{Application.getTasksByRange(tasks.size() + offset , tagId)}">next page</a>
+#{/if}
+
+

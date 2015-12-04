@@ -1,0 +1,11 @@
+.table>tbody>tr.row>td, .table>thead>tr.row>th{
+	vertical-align:middle;
+	max-height: 36px !important;
+    height: 36px !important;
+}
+
+.task-row div {
+	height: 36px;
+	line-height: 36px;
+	overflow: hidden;
+}

@@ -1,0 +1,195 @@
+/* Start side bar */
+#side-nav{
+	width: 15%;
+	float: left;
+	font-size: 18px;
+}
+#side-nav a{
+	color: #8E8E93;
+}
+
+#side-nav li.active a{
+	color: #1F1F21;
+	background-color: white;
+	border-left: 8px solid #5AC8FB;
+}
+
+#side-nav li.active:after {
+	position: absolute;
+	top: 0;
+	right: 0px;
+	display: inline-block;
+	border-left: 0;
+	border-right: 21px solid white;
+	border-top: 21px solid transparent;
+	border-bottom: 21px solid transparent;
+	content: '';
+}
+
+#side-nav li.active a:after{
+	position: absolute;
+	top: -5px;
+	right: 0px;
+	display: inline-block;
+	border-left: 0;
+	border-right: 26px solid #F1F1F1;
+	border-top: 26px solid transparent;
+	border-bottom: 26px solid transparent;
+	content: '';
+}
+
+/* End side bar */
+
+#profile-content{
+	width: 85%;
+	min-height: 600px;
+	padding: 0 20px 20px 20px;
+	float: right;
+	display: inline-block;
+	background-color: white;
+}
+
+#profile-content h3{
+	margin: 10px 0 30px 0;
+}
+
+#avatar-link{
+	display: inline-block;
+	width: 160px;
+	height: 160px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	cursor: pointer;
+}
+
+
+/******************************************* Avatar Upload Modal Start ************************************/
+#avr-edit-model h3{
+	color: #2a6496;
+	z-index: 999;	
+}
+
+#avr-edit-model img{
+	width: 100%;
+	height: auto;
+}
+
+#avr-btn-wrap{
+	padding: 6px 12px;
+	overflow: hidden;
+}
+
+#avr-btn-wrap{
+	padding: 6px 12px;
+	overflow: hidden;
+}
+
+#avatar-upload{
+	position: absolute;
+	height: 33px;
+	margin: 0;
+	padding: 0;
+	top: 20px;
+	left: 20px;
+	font-size: 20px;
+	cursor: pointer;
+	opacity: 0;
+}
+
+#avr-submit{
+	padding:6px 12px;
+	float: right;
+}
+
+#upload-fn{
+	padding:0;
+	margin-bottom: 0;
+	height:33px;
+	line-height: 33px;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+#fn-text{
+	height:100%;
+	padding: 6px 12px;
+	line-height:15px;
+	font-size: 15px;
+	color: #666;
+	border: 1px solid #D8D8D8;
+	font-family: inherit;
+	border-radius: 4px;
+}
+
+.jcrop-keymgr{
+	display: none !important; 
+}
+
+.jcrop-holder{
+	margin-top: 15px !important;
+}
+
+/******************************************* Avatar Upload Modal End ************************************/
+
+/* Start form input */
+
+.form-group{
+	margin: 15px 0;
+}
+
+.form-label{
+	width:15%;
+	height: 100%;
+	display: inline-block;
+	vertical-align:top;	
+}
+
+.form-label label{
+	height: 100%;
+}
+
+.form-input{
+	width:60%;
+	display: inline-block;
+}
+
+#firstname-wrap, #lastname-wrap, #phone-wrap{
+	width: 214px;
+}
+
+#blk{
+	width: 10%;
+	display: inline-block;
+}
+
+#street{
+	width: 50%;
+	display: inline-block;
+}
+
+#unit{
+	width: 15%;
+	margin: 15px 0;
+	display: block;
+}
+
+#post{
+	width: 20%;
+	display: block;
+}
+
+/* End form input */
+
+
+
+
+
+
+
+
+
+
+
+

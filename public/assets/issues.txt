@@ -1,0 +1,24 @@
+1. taskdetail 和 index search页面登录后没有显示logout.  Solved
+2. Task 没有照片
+3. 当奖励为Commission时，产品不应该有Coupon的数据。 
+4. 上传图会多出其他的
+5. admin login 抛异常 本地解决方案如下，但AWS不知怎样解决：
+
+	IDE中配置JRE环境处，设置启动参数   -XX:-UseSplitVerifier
+	Window → Preferences → Java → Installed JREs → Edit... → Default VM arguments
+	If you want to stay with JDK7, would be to use "-XX:-UseSplitVerifier" as an argument for the VM.
+
+	
+	
+	
+	
+修改： 
+1. Avatar 从soft delete 改为 hard delete
+	
+	
+	
+	
+Import local database to AWS(RDS): 
+mysqldump -u root --databases payee_db --single-transactio
+n --compress --order-by-primary -pfx1021665 | mysql -u changming --port=3306 --h
+ost=payee.cs5q9ptjrlz8.ap-southeast-1.rds.amazonaws.com -pfx1021665

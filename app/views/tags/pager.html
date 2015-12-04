@@ -1,0 +1,22 @@
+<nav class="pager-nav">
+  <ul class="pagination">
+  
+	%{
+		for(int i = 0; i < _total / _pageCount; i++){
+		int from = i * _pageCount;
+	}%
+		#{if _model == "task"}
+			<li class="#{if i == _currentPage} active #{/if}"><a href="@{TaskController.allTask(from, _pageCount)}">${i+1}</a></li>
+		#{/if}
+		#{elseif _model == "job"}
+			<li class="#{if i == _currentPage} active #{/if}"><a href="@{JobController.myJobs(from, _pageCount)}">${i+1}</a></li>
+		#{/elseif}
+		#{elseif _model == "reward"}
+			<li class="#{if i == _currentPage} active #{/if}"><a href="@{AwardController.myAwards(from, _pageCount)}">${i+1}</a></li>
+		#{/elseif}
+	%{
+		}
+	}%
+  
+  </ul>
+</nav>

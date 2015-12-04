@@ -1,0 +1,128 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+<link href="@{'/public/stylesheets/index.css'}" rel="stylesheet">
+<script src="@{'/public/javascripts/jscroll/jquery.jscroll.min.js'}" type="text/javascript"></script>
+
+<div id="tool-bar">
+	#{if user}
+		<a id="view-task-btn" class="btn btn-primary" href="@{TaskController.allTask(0, 10)}">View my tasks</a>
+		<a id="view-job-btn" class="btn btn-success" href="@{JobController.myJobs(0, 10)}">View my jobs</a>
+	#{/if}
+	<div id="search-bar">
+		<form id="tag-form" method="POST">
+	    	<ul id="tag-menu">
+	    		<li id="-1" class="#{if tagId == -1}active#{/if}"><a href="@{Application.getTaskByTag(-1)}">All</a></li>
+	    		#{list items: tags, as: 'tag' }
+	    			<li id="${tag?.id}" class="#{if tagId == tag.id}active#{/if}"><a href="@{Application.getTaskByTag(tag?.id)}">${tag.getName()}</a></li>
+				#{/list} 
+	    	</ul>
+	    </form>
+	    <form id="search-form" method="POST" action="/Application/searchTask">
+	        <input id="search-input" placeholder="Enter your search term..." type="search" value="" name="text">
+	        <a id="search-submit" class="glyphicon glyphicon-search"></a>
+	    </form>
+	</div>
+</div>
+
+<div id="content">
+	<nav id="slide-menu">
+		<ul>
+			#{if user}
+				<li><a href="@{ProfileController.profile()}">My Profile</a></li>
+				<li><a data-toggle="modal" data-target="#createtask-model">Create Task</a></li>
+				<li>
+					#{if user instanceof models.NormalUser}
+           				<a href="@{SessionController.logout()}">Logout</a>
+           			#{/if}
+           			#{else}
+           				<a id="logout-btn" onclick="fblogout();">Logout</a>
+           			#{/else}
+				</li>
+			#{/if}
+			#{else}
+				<li><a data-toggle="modal" data-target="#login-model">Login</a></li>
+				<li><a data-toggle="modal" data-target="#signup-model">Signup</a></li>
+			#{/else}
+		</ul>
+	</nav>	
+
+	<div id="task-container">
+		#{list items:tasks, as:'task'}
+			<div class="col col-xs-12 col-sm-6 col-md-3 task-cell">
+					%{
+						reward = task.rewards.iterator().next();
+					}%
+					<a class="tile" href="@{TaskController.taskDetail(task.id)}" target="_blank" style="background-image: url('#{if task?.images.size() > 0}${task?.images?.iterator()?.next()?.thumbnailPath}#{/if}#{else}../../public/images/default_image.jpg#{/else}');">
+						<div class="item-info">
+							<span class="title">${task.title}</span>
+							<p class="reward">
+						  		#{if reward.rewardType.getName() == "free"}
+						  			Free
+						  		#{/if}
+						  		#{elseif reward.rewardType.getName() == "discount"}
+						  			${(int)reward.value * 100}% <span>Discount</span>
+						  		#{/elseif}
+						  		#{elseif reward.rewardType.getName() == "commission"}
+						  			${(int)reward.value * 100}% <span>Commission</span>
+						  		#{/elseif}
+					  		</p>
+						</div>
+					</a>
+			  	<a class="add-job-btn glyphicon glyphicon-plus-sign" onclick="#{if user}addJob(${task?.id});#{/if}#{else}showAlertToast('Error: You have to login first.', 'alert-danger');#{/else}"></a>
+			</div>
+		#{/list}
+		 <a class="next-link" #{if tagId} href="@{Application.getTasksByRange(tasks.size(), tagId)}" #{/if} 
+		 						#{else} href="@{Application.getTasksByRange(tasks.size(), -1)}" #{/else}>next page</a>
+	</div>
+
+</div>
+
+#{createtask /}
+
+<script type="text/javascript">
+$(function(){
+	var tagLen = $('#tag-menu > li.active').length;
+
+	if(tagLen == 0){
+		$('#tag-menu li:first').addClass('active');
+	}
+	
+	$('#search-submit').on('click', function(){
+		$('#search-form').submit();
+	});
+	
+	$('#slide-menu-btn').click(function(){
+		$('body').toggleClass('menu-active');
+	});
+	
+	$('#task-container').jscroll({
+	    nextSelector: 'a.next-link',
+	    callback: function(){
+	    	
+	    }
+	});
+	
+});
+
+function addJob(id){
+	$.ajax({
+        url: "/JobController/addJob",
+        type: "POST",
+        data: {
+        	taskId: id
+		},
+        success: function(response, status) {
+        	if(status == "success" && response > 0){
+        		showAlertToast("Successfully added the job, go to your dashboard to view your jobs.", "alert-success");
+        	}else{
+        		showAlertToast("Error: " + response, "alert-danger");
+        	}
+        },
+        error: function(request, status, err){
+           	showAlertToast("Error: " + err, "alert-danger");
+        }
+    });
+}
+</script>
+
