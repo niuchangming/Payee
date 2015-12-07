@@ -27,7 +27,7 @@
 					}%
 					#{if reward.rewardType.getName() == "commission"}
 						%{
-							voucherValue = job.deals.size() * job.task.products.iterator().next().price * job.task.rewards.iterator().next().value;
+							voucherValue = job.deals.size() * (job.task.products.iterator().next().price - job.task.products.iterator().next().coupons?.iterator()?.next()?.value) * job.task.rewards.iterator().next().value;
 						}%
 						<p>Currently, you earn <span>S$ #{if voucherValue > 0} ${voucherValue.format('.00')} #{/if}#{else}0#{/else}</span> ${reward.rewardType.getName()} for the product.</p>
 					#{/if}

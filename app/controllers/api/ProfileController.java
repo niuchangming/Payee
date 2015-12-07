@@ -63,9 +63,12 @@ public class ProfileController extends Controller{
 			renderJSON(new Error("Invalid access token"));
 		}
 		
-		Profile profile = user.profiles.iterator().next();
-		if(profile == null){
-			renderJSON(new Error("Profile cannot be found."));
+		Profile profile = null;
+		Iterator<Profile> iterator = user.profiles.iterator();
+		if(iterator.hasNext()){
+			profile = iterator.next();
+		}else{
+			profile = new Profile().createProfileByUser(user);
 		}
 		
 		profile.phone = phone;

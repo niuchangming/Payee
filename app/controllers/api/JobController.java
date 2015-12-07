@@ -71,7 +71,12 @@ public class JobController extends Controller{
 				"accesses"));
 	}
 	
-	public static void deleteJob(long JobId){
+	public static void deleteJob(String accessToken, long JobId){
+		User dbUser = User.find("byAccessToken", accessToken).first();
+		if(dbUser == null){
+			renderJSON(new Error("Invalid access token"));
+		}
+		
 		Job job = Job.findById(JobId);
 		if(job == null){
 			throw new RuntimeException("Job cannot be find due to invalid task id.");
@@ -133,7 +138,12 @@ public class JobController extends Controller{
 		}
 	}
 	
-	public static void voucher(long jobId, double value){
+	public static void voucher(String accessToken, long jobId, double value){
+		User dbUser = User.find("byAccessToken", accessToken).first();
+		if(dbUser == null){
+			renderJSON(new Error("Invalid access token"));
+		}
+		
 		Job job = Job.findById(jobId);
 		if(job == null){
 			throw new RuntimeException("Job cannot be found by the job ID: " + jobId);
@@ -154,16 +164,21 @@ public class JobController extends Controller{
 				"*.class", 
 				"*.id", 
 				"*.persistent",
-				"rewards.images.thumbnail",
-				"rewards.images.image",
-				"rewards.images.file",
-				"rewards.images.store",
-				"rewards.vouchers",
-				"rewards.task",
+				"reward.images.thumbnail",
+				"reward.images.image",
+				"reward.images.file",
+				"reward.images.store",
+				"reward.vouchers",
+				"reward.task",
 				"job"));
 	}
 	
-	public static void voucherScan(String jobToken){
+	public static void voucherScan(String accessToken, String jobToken){
+		User dbUser = User.find("byAccessToken", accessToken).first();
+		if(dbUser == null){
+			renderJSON(new Error("Invalid access token"));
+		}
+		
 		Job job = Job.find("byToken", jobToken).first();
 		if(job == null){
 			renderText("Job cannot be found by the job token: " + jobToken);
