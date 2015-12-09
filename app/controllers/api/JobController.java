@@ -113,29 +113,8 @@ public class JobController extends Controller{
 		}
 		
 		Task task = job.task;
-		String qrcode = jobToken + "|" + UUID.randomUUID().toString().trim(); 
+		String qrcode = jobToken + "|" + UUID.randomUUID().toString().trim() + "|coupon"; 
 		renderTemplate("/JobController/productDetail.html", task, qrcode);
-	}
-	
-	public static void scanReciever(String qrcode, String accessToken){
-		Deal deal = Deal.find("byQrcode", qrcode).first();
-		if(deal != null){
-			renderJSON(new Error("QR Code has been scanned!"));
-		}
-		
-		String jobToken = qrcode.split("\\|")[0];
-		Job job = Job.find("byToken", jobToken).first();
-		if(job == null){
-			renderJSON(new Error("Job cannot be found."));
-		}
-		
-		if(job.task.user.accessToken.equals(accessToken)){
-			job.createDeal(request.remoteAddress, qrcode);
-			Set<Deal> deals = job.deals;
-			renderJSON(CommonUtil.toJson(deals, "job", "*.id", "*.persistent"));
-		}else{
-			renderJSON(new Error("You don't have the right permission for the action."));
-		}
 	}
 	
 	public static void voucher(String accessToken, long jobId, double value){
@@ -146,7 +125,7 @@ public class JobController extends Controller{
 		
 		Job job = Job.findById(jobId);
 		if(job == null){
-			throw new RuntimeException("Job cannot be found by the job ID: " + jobId);
+			renderJSON(new Error("Job cannot be found."));
 		}
 		
 		Voucher voucher = null;
@@ -173,30 +152,52 @@ public class JobController extends Controller{
 				"job"));
 	}
 	
-	public static void voucherScan(String accessToken, String jobToken){
-		User dbUser = User.find("byAccessToken", accessToken).first();
-		if(dbUser == null){
-			renderJSON(new Error("Invalid access token"));
+	public static void dealScan(String qrcode, String accessToken){
+		Deal deal = Deal.find("byQrcode", qrcode).first();
+		if(deal != null){
+			renderJSON(new Error("QR Code has been scanned!"));
 		}
 		
+		Job job = Job.find("byToken", qrcode.split("\\|")[0]).first();
+		if(job == null){
+			renderJSON(new Error("Job cannot be found."));
+		}
+		
+		User authorisedUser = User.find("access_token = ? and boss_cashier_id = ?", accessToken, job.task.user.id).first();
+		if(authorisedUser == null){
+			renderJSON(new Error("Permission error."));
+		}else{
+			job.createDeal(request.remoteAddress, qrcode);
+			Set<Deal> deals = job.deals;
+			renderJSON(CommonUtil.toJson(deals, "job", "*.id", "*.persistent"));
+		}
+	}
+	
+	public static void voucherScan(String accessToken, String jobToken){
 		Job job = Job.find("byToken", jobToken).first();
 		if(job == null){
-			renderText("Job cannot be found by the job token: " + jobToken);
+			renderJSON(new Error("Job cannot be found."));
 		}
 		
 		Voucher voucher = job.vouchers.iterator().next();
 		
 		if(!voucher.isValid){
-			renderText("The voucher is already invalid.");
+			renderJSON(new Error("The voucher is already invalid."));
 		}
 		
 		if(voucher.reward.expireDate.before(new Date())){
-			renderText("The voucher has expired.");
+			renderJSON(new Error("The voucher has expired."));
 		}
 		
-		voucher.updateVoucherByScan();
-		Set<Deal> deals = job.deals;
-		renderJSON(CommonUtil.toJson(deals, "job", "*.id", "*.persistent"));
+		User authorisedUser = User.find("access_token = ? and boss_cashier_id = ?", accessToken, job.task.user.id).first();
+		if(authorisedUser == null){
+			renderJSON(new Error("Permission error."));
+		}else{
+			voucher.updateVoucherByScan();
+			job.user.updateByPoint(2);
+			Set<Deal> deals = job.deals;
+			renderJSON(CommonUtil.toJson(deals, "job", "*.id", "*.persistent"));
+		}
 	}
 	
 }

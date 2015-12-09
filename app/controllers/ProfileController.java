@@ -13,6 +13,8 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import controllers.api.Error;
+
 import models.Address;
 import models.Avatar;
 import models.Company;
@@ -223,6 +225,46 @@ public class ProfileController extends Controller{
 		company.save();
 		
 		renderText("success");
+	}
+	
+	public static void addCashier(String accessToken, String cashierAccessToken){
+		User user = User.find("access_token = ?", accessToken).first();
+		
+		if(user == null){
+			renderText("Invalid access token");
+		}
+		
+		User cashier = User.find("access_token = ?", cashierAccessToken).first();
+		
+		if(cashier == null){
+			renderText("Cannot found the cashier.");
+		}
+		
+		cashier.updateByBoss(user);
+		
+		renderText("Successfully added.");
+	}
+	
+	public static void cashiers(String accessToken){
+		User user = User.find("access_token = ?", accessToken).first();
+		
+		if(user == null){	
+			renderText("Invalid access token");
+		}
+		
+		render(user.cashiers);
+	}
+	
+	public static void removeCashier(long entityId){
+		User cashier = User.findById(entityId);
+		
+		if(cashier == null){
+			renderText("Cannot found the user.");
+		}
+		
+		cashier.removeBoss();
+		
+		renderText("Remove successfully.");
 	}
 }
 

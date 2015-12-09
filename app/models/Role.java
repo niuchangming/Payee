@@ -5,7 +5,7 @@ package models;
  *
  */
 public enum Role {
-	NORMAL("normal", 0), MERCHANT("merchant", 1), ADMIN("admin", 2);
+	NORMAL("normal", 0), CASHIER("cashier", 1), MERCHANT("merchant", 2), ADMIN("admin", 3);
 	private String name;  
     private int index;  
     

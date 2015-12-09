@@ -1,6 +1,7 @@
 package controllers.api;
 
 import java.util.Iterator;
+import java.util.List;
 
 import models.Address;
 import models.Avatar;
@@ -183,6 +184,57 @@ public class ProfileController extends Controller{
 		
 		Avatar avatar = new Avatar(user, 0, 0, 0, 0, 0, image);
 		renderJSON(CommonUtil.toJson(avatar, "*.class", "user", "task", "file", "store", "image"));
+	}
+	
+	public static void addCashier(String accessToken, String cashierAccessToken){
+		User user = User.find("access_token = ?", accessToken).first();
+		if(user == null){
+			renderJSON(new Error("Invalid access token"));
+		}
+		
+		User cashier = User.find("access_token = ?", cashierAccessToken).first();
+		if(cashier == null){
+			renderJSON(new Error("Cannot found the cashier."));
+		}
+		
+		cashier.updateByBoss(user);
+		
+		renderJSON("{\"success\": \"Add successfully.\"}");
+	}
+	
+	public static void cashiers(String accessToken){
+		User user = User.find("access_token = ?", accessToken).first();
+		if(user == null){	
+			renderJSON(new Error("Invalid access token"));
+		}
+		
+		renderJSON(CommonUtil.toJson(user.cashiers, 
+				"*.class",
+				"*.id",
+				".user",
+				".profile",
+				"*.persistent",
+				"password",
+				"accessToken",
+				"companys",
+				"tasks",
+				"jobs",
+				"boss",
+				"cashiers",
+				"avatars.file",
+				"avatars.image",
+				"avatars.store"));
+	}
+	
+	public static void removeCashier(long entityId){
+		User cashier = User.findById(entityId);
+		if(cashier == null){
+			renderJSON(new Error("Cannot found the user."));
+		}
+		
+		cashier.removeBoss();
+		
+		renderJSON("{\"success\": \"Remove successfully.\"}");
 	}
 }
 

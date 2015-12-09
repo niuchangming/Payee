@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import controllers.api.Error;
+
 import models.Access;
 import models.Deal;
 import models.Job;
@@ -75,28 +77,8 @@ public class JobController extends Controller{
 		}
 		
 		Task task = job.task;
-		String qrcode = jobToken + "|" + UUID.randomUUID().toString().trim(); 
+		String qrcode = jobToken + "|" + UUID.randomUUID().toString().trim() + "|coupon"; 
 		renderTemplate("/JobController/productDetail.html", task, qrcode);
-	}
-	
-	public static void scanReciever(String qrcode, String userAccessToken){
-		Deal deal = Deal.find("byQrcode", qrcode).first();
-		if(deal != null){
-			renderText("QR Code has been scanned!");
-		}
-		
-		String jobToken = qrcode.split("\\|")[0];
-		Job job = Job.find("byToken", jobToken).first();
-		if(job == null){
-			renderText("Job cannot be found by the job token: " + jobToken);
-		}
-		
-		if(job.task.user.accessToken.equals(userAccessToken)){
-			job.createDeal(request.remoteAddress, qrcode);
-			renderText("success");
-		}else{
-			renderText("You don't have the right permission for the action.");
-		}
 	}
 	
 	public static void voucher(long jobId, double value){
@@ -119,26 +101,6 @@ public class JobController extends Controller{
 		render(voucher);
 	}
 	
-	public static void voucherScan(String jobToken){
-		Job job = Job.find("byToken", jobToken).first();
-		if(job == null){
-			renderText("Job cannot be found by the job token: " + jobToken);
-		}
-		
-		Voucher voucher = job.vouchers.iterator().next();
-		
-		if(!voucher.isValid){
-			renderText("The voucher is already invalid.");
-		}
-		
-		if(voucher.reward.expireDate.before(new Date())){
-			renderText("The voucher has expired.");
-		}
-		
-		voucher.updateVoucherByScan();
-		Set<Deal> deals = job.deals;
-		renderJSON(deals);
-	}
 }
 
 

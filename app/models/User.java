@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -50,6 +51,8 @@ public class User extends Model{
 	@Column(name="access_token", columnDefinition="TEXT")
 	public String accessToken;
 	
+	public int point;
+	
 	@OneToMany(mappedBy = "user")
 	public Set<Company> companys;
 	
@@ -65,6 +68,13 @@ public class User extends Model{
 	@OneToMany(mappedBy = "user")
 	public Set<Job> jobs;
 	
+	@ManyToOne(cascade=CascadeType.ALL)    
+    @JoinColumn(name = "boss_cashier_id")
+    public User boss;
+
+    @OneToMany(mappedBy = "boss")
+    public Set<User> cashiers;
+	
 	public User(){
 		this.registerDateTime = new Date();
 		this.isActive = false;
@@ -74,6 +84,8 @@ public class User extends Model{
 		this.avatars = new HashSet<Avatar>();
 		this.companys = new HashSet<Company>();
 		this.jobs = new HashSet<Job>();
+		this.cashiers = new HashSet<User>();
+		this.boss = this;
 		this.isDelete = false;
 	}
 	
@@ -96,6 +108,23 @@ public class User extends Model{
 		return AES.encrypt(
 				CommonUtil.formatDateTime(this.registerDateTime)
 				+ param, null).trim();
+	}
+	
+	public void updateByPoint(int point){
+		this.point = point;
+		this.save();
+	}
+	
+	public void updateByBoss(User boss){
+		this.boss = boss;
+		this.role = Role.CASHIER;
+		this.save();
+	}
+	
+	public void removeBoss(){
+		this.boss = null;
+		this.role = Role.NORMAL;
+		this.save();
 	}
 	
 	@Override
