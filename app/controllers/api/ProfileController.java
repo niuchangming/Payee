@@ -8,6 +8,7 @@ import models.Avatar;
 import models.Company;
 import models.Image;
 import models.Profile;
+import models.Role;
 import models.User;
 import play.db.jpa.Blob;
 import play.mvc.Controller;
@@ -29,14 +30,27 @@ public class ProfileController extends Controller{
 				"*.profile",
 				"*.company",
 				"*.persistent",
+				"*.companys.frontIC",
+				"*.companys.backIC",
+				"*.companys.businessCert",
+				"*.tasks",
+				"*.jobs",
+				"*.password",
 				"avatars.file",
 				"avatars.image",
 				"avatars.store",
-				"companys.frontIC",
-				"companys.backIC",
-				"companys.businessCert",
-				"tasks",
-				"jobs"));
+				"boss.boss",
+				"boss.cashiers",
+				"boss.accessToken",
+				"boss.avatars.file",
+				"boss.avatars.image",
+				"boss.avatars.store",
+				"cashiers.boss",
+				"cashiers.cashiers",
+				"cashiers.accessToken",
+				"cashiers.avatars.file",
+				"cashiers.avatars.image",
+				"cashiers.avatars.store"));
 	}
 	
 	public static void uploadAvatar(String accessToken, Blob image){
@@ -190,6 +204,10 @@ public class ProfileController extends Controller{
 		User user = User.find("access_token = ?", accessToken).first();
 		if(user == null){
 			renderJSON(new Error("Invalid access token"));
+		}
+		
+		if(user.role != Role.MERCHANT || accessToken.endsWith(cashierAccessToken)){
+			renderJSON(new Error("Permission error."));
 		}
 		
 		User cashier = User.find("access_token = ?", cashierAccessToken).first();

@@ -15,7 +15,6 @@ public class TaskController extends Controller{
 		List<Task> tasks = Task.find("end_date >= ? and is_delete = false order by create_datetime desc", new Date()).fetch(from, max);
 		
 		renderJSON(CommonUtil.toJson(tasks,
-				"jobs",
 				"*.class",
 				"*.tasks",
 				"*.id",
@@ -35,6 +34,8 @@ public class TaskController extends Controller{
 				"user.avatars",
 				"user.profiles",
 				"user.jobs",
+				"user.boss",
+				"user.cashiers",
 				"tags.parentTag",
 				"tags.childrenTags",
 				"products.coupons", 
@@ -46,6 +47,7 @@ public class TaskController extends Controller{
 				"images.thumbnail",
 				"images.image",
 				"images.file",
-				"images.store"));
+				"images.store",
+				"jobs"));
 	}
 }

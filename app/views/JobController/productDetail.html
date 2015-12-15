@@ -28,21 +28,20 @@
 						<div id="task-img" class="col col-xs-8 col-sm-8 col-md-8" style="background-image: url('@{TaskController.getImage(task?.images?.iterator()?.next()?.id)}');"></div>
 					#{/if}
 					<ul class="col col-xs-4 col-sm-4 col-md-4">
-						#{if task.rewards.iterator().next().rewardType.getName() == 'commission'}
-							<li id="qrcode">
-							</li>
-							<li id="price">  
-								<div>
-									<span class="real">S$ ${task.products.iterator().next().price}</span><br/>
-									<span class="off">S$ ${task.products.iterator().next().coupons.iterator().next().value}</span><span class="bubble"> Off by merchant to scan</span>
-								</div>
-							</li>
+						#{if task.products.iterator().next().coupons.iterator().next().value > 0}
+							<li id="qrcode"></li>
 						#{/if}
-						#{else}
-							<li id="price">  
-								<span>S$ ${task.products.iterator().next().price}</span>
-							</li>
-						#{/else}
+						<li id="price">  
+							<div>
+								#{if task.products.iterator().next().coupons.iterator().next().value > 0}
+									<span class="through">S$ ${task.products.iterator().next().price}</span><br/>
+									<span class="off">S$ ${task.products.iterator().next().coupons.iterator().next().value}</span><span class="bubble"> Off by merchant to scan</span>
+								#{/if}
+								#{else}
+									<span>S$ ${task.products.iterator().next().price}</span><br/>
+								#{/else}
+							</div>
+						</li>
 					</ul>
 				</div>
 			</div>

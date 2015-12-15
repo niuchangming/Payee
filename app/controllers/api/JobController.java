@@ -14,7 +14,7 @@ import models.Voucher;
 import play.mvc.Controller;
 import utils.CommonUtil;
 
-public class JobController extends Controller{
+public class JobController extends Controller {
 	
 	public static void addJob(long taskId, String accessToken){
 		Task dbTask = Task.findById(taskId);
@@ -68,7 +68,9 @@ public class JobController extends Controller{
 				"task.rewards.task.images.store",
 				"vouchers",
 				"deals.job",
-				"accesses"));
+				"accesses",
+				"user.boss",
+				"user.cashiers"));
 	}
 	
 	public static void deleteJob(String accessToken, long JobId){
@@ -163,7 +165,7 @@ public class JobController extends Controller{
 			renderJSON(new Error("Job cannot be found."));
 		}
 		
-		User authorisedUser = User.find("access_token = ? and boss_cashier_id = ?", accessToken, job.task.user.id).first();
+		User authorisedUser = User.find("(access_token = ? and boss_id = ?) or (access_token = ?)", accessToken, job.task.user.id, job.task.user.accessToken).first();
 		if(authorisedUser == null){
 			renderJSON(new Error("Permission error."));
 		}else{
@@ -189,14 +191,13 @@ public class JobController extends Controller{
 			renderJSON(new Error("The voucher has expired."));
 		}
 		
-		User authorisedUser = User.find("access_token = ? and boss_cashier_id = ?", accessToken, job.task.user.id).first();
+		User authorisedUser = User.find("(access_token = ? and boss_id = ?) or (access_token = ?)", accessToken, job.task.user.id, job.task.user.accessToken).first();
 		if(authorisedUser == null){
 			renderJSON(new Error("Permission error."));
 		}else{
 			voucher.updateVoucherByScan();
-			job.user.updateByPoint(2);
-			Set<Deal> deals = job.deals;
-			renderJSON(CommonUtil.toJson(deals, "job", "*.id", "*.persistent"));
+			job.user.updateByPoint(1);
+			renderJSON("{\"success\": \"Please give the user your reward since the task is completed!\"}");
 		}
 	}
 	

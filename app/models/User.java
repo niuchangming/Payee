@@ -69,7 +69,7 @@ public class User extends Model{
 	public Set<Job> jobs;
 	
 	@ManyToOne(cascade=CascadeType.ALL)    
-    @JoinColumn(name = "boss_cashier_id")
+    @JoinColumn(name = "boss_id")
     public User boss;
 
     @OneToMany(mappedBy = "boss")
@@ -85,7 +85,6 @@ public class User extends Model{
 		this.companys = new HashSet<Company>();
 		this.jobs = new HashSet<Job>();
 		this.cashiers = new HashSet<User>();
-		this.boss = this;
 		this.isDelete = false;
 	}
 	

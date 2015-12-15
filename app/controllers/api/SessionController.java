@@ -25,7 +25,9 @@ public class SessionController extends Controller{
 				"*.persistent",
 				"companys",
 				"tasks",
-				"jobs"));
+				"jobs",
+				"boss",
+				"cashiers"));
     }
 	
 	public static void login(String email, String password) {
@@ -44,7 +46,9 @@ public class SessionController extends Controller{
 				"avatars.store",
 				"companys",
 				"tasks",
-				"jobs"));
+				"jobs",
+				"boss",
+				"cashiers"));
     }
 	
 	public static void loginWithFB(String fbId){
@@ -66,7 +70,9 @@ public class SessionController extends Controller{
 				"avatars.store",
 				"companys",
 				"tasks",
-				"jobs"));
+				"jobs",
+				"boss",
+				"cashiers"));
 	}
 	
 	public static boolean notExists(String email){
