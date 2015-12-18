@@ -40,15 +40,6 @@ public class Reward extends Model{
 	
 	public double value;
 	
-	@Column(name="collect_address")
-	public String collectAddress;
-	
-	@Column(name="collect_post_code")
-	public String collectPostCode;
-	
-	@Column(name="collect_unit")
-	public String collectUnit;
-	
 	@OneToMany(mappedBy = "reward")
 	public Set<RewardImage> images;
 	
@@ -80,9 +71,6 @@ public class Reward extends Model{
 		this.minShares = reward.minShares;
 		this.value = reward.value;
 		this.expireDate = reward.expireDate;
-		this.collectAddress = reward.collectAddress;
-		this.collectPostCode = reward.collectPostCode;
-		this.collectUnit = reward.collectUnit;
 		this.save();
 	}
 	

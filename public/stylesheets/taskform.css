@@ -2,7 +2,7 @@
 /** Start date input **/
 
 #srt-date, #end-date, #share-time, #exp-date, #coup-exp-date,
-#reward-val-gp > .form-input, #addr-unit, #addr-post, #coup-val-wrap,
+#reward-val-gp > .form-input, #coup-val-wrap,
 #p-price, #reward-title-input{
 	width: 214px;
 }
@@ -69,10 +69,6 @@
 
 #reward\.rewardType-error, #tagId-error{
 	width: 100%;
-}
-
-#addr-unit{
-	margin: 15px 0;
 }
 
 /** End Award **/

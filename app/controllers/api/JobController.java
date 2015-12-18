@@ -68,9 +68,7 @@ public class JobController extends Controller {
 				"task.rewards.task.images.store",
 				"vouchers",
 				"deals.job",
-				"accesses",
-				"user.boss",
-				"user.cashiers"));
+				"accesses"));
 	}
 	
 	public static void deleteJob(String accessToken, long JobId){

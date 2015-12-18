@@ -29,7 +29,7 @@ public class Address extends Model{
 	public String unit;
 	
 	@Column(name="post_code")
-	public int postCode;
+	public String postCode;
 	
 	public Address createAddressByProfile(Profile profile){
 		this.profile = profile;

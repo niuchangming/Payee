@@ -136,7 +136,7 @@ public class ProfileController extends Controller{
 				if(addresses[i].block == 0 
 						|| CommonUtil.isBlank(addresses[i].street) 
 						|| CommonUtil.isBlank(addresses[i].unit) 
-						|| addresses[i].postCode == 0)
+						|| CommonUtil.isBlank(addresses[i].postCode))
 					continue;
 				
 				addresses[i].createAddressByCompany(dbCompany);
@@ -232,6 +232,10 @@ public class ProfileController extends Controller{
 		
 		if(user == null){
 			renderText("Invalid access token");
+		}
+		
+		if(user.role != Role.MERCHANT || accessToken.equals(cashierAccessToken)){
+			renderText("Permission error.");
 		}
 		
 		User cashier = User.find("access_token = ?", cashierAccessToken).first();

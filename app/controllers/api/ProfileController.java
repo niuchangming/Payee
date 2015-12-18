@@ -2,6 +2,7 @@ package controllers.api;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import models.Address;
 import models.Avatar;
@@ -9,6 +10,7 @@ import models.Company;
 import models.Image;
 import models.Profile;
 import models.Role;
+import models.Task;
 import models.User;
 import play.db.jpa.Blob;
 import play.mvc.Controller;
@@ -114,7 +116,7 @@ public class ProfileController extends Controller{
 		renderJSON(CommonUtil.toJson(profile, "user", "addresses", "*.id", "*.persistent", "*.class"));
 	}
 	
-	public static void updateAddress(String accessToken, int block, String street, String unit, int postCode){
+	public static void updateAddress(String accessToken, int block, String street, String unit, String postCode){
 		User user = User.find("byAccessToken", accessToken).first();
 		
 		if(user == null){
@@ -200,13 +202,35 @@ public class ProfileController extends Controller{
 		renderJSON(CommonUtil.toJson(avatar, "*.class", "user", "task", "file", "store", "image"));
 	}
 	
+	public static void companyAddresses(String accessToken, long taskId){
+		User user = User.find("byAccessToken", accessToken).first();
+		
+		if(user == null){
+			renderJSON(new Error("Invalid access token"));
+		}
+		
+		Task task = Task.findById(taskId);
+		if(task == null){
+			renderJSON(new Error("Task cannot be found."));
+		}
+		
+		Set<Address> addresses = task.user.companys.iterator().next().addresses;
+		
+		renderJSON(CommonUtil.toJson(addresses, 
+				"*.id", 
+				"*.persistent", 
+				"*.class", 
+				"profile", 
+				"company"));
+	}
+	
 	public static void addCashier(String accessToken, String cashierAccessToken){
 		User user = User.find("access_token = ?", accessToken).first();
 		if(user == null){
 			renderJSON(new Error("Invalid access token"));
 		}
 		
-		if(user.role != Role.MERCHANT || accessToken.endsWith(cashierAccessToken)){
+		if(user.role != Role.MERCHANT || accessToken.equals(cashierAccessToken)){
 			renderJSON(new Error("Permission error."));
 		}
 		

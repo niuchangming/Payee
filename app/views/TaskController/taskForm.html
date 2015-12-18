@@ -10,6 +10,10 @@
 <link href="@{'/public/stylesheets/froala/froala_style.min.css'}" rel="stylesheet">
 
 <script src="@{'/public/javascripts/froala/froala_editor.min.js'}" type="text/javascript"></script>
+<script src="@{'/public/javascripts/froala/font_size.min.js'}" type="text/javascript"></script>
+<script src="@{'/public/javascripts/froala/colors.min.js'}" type="text/javascript"></script>
+<script src="@{'/public/javascripts/froala/font_family.min.js'}" type="text/javascript"></script>
+<script src="@{'/public/javascripts/froala/lists.min.js'}" type="text/javascript"></script>
 
 <form id="task-form">
 	<ul class="nav nav-tabs">
@@ -141,18 +145,6 @@
 						<textarea id="a-instuct" class="form-control" name="reward.instruction" rows="4" placeholder="Instruction">${reward?.instruction}</textarea>
 					</div>
 				</div>
-				
-				<div class="form-group">
-					<div class="form-label">
-						<label>Collect address:</label>
-					</div>
-					<div class="form-input">
-						<input type="text" id="addr" class="form-control" name="reward.collectAddress" placeholder="Street/Road" value="${reward?.collectAddress}">
-						<input type="text" id="addr-unit" class="form-control" name="reward.collectUnit" placeholder="Unit No." value="${reward?.collectUnit}">
-						<input type="text" id="addr-post" class="form-control" name="reward.collectPostCode" placeholder="Post code" value="${reward?.collectPostCode}">
-					</div>
-				</div>
-	    	
 	    	</div>
 	   	</div>
 	   	
@@ -455,13 +447,6 @@
 	            	required: true,
 	                date: true,
 	                largerThanEnd: true
-	            },
-	            "reward.collectAddress":{
-	            	required:true
-	            },
-	            "reward.collectPostCode":{
-	            	required: true,
-	            	number: true
 	            },
 	            tagId:{
 	        		required:true		

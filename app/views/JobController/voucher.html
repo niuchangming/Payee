@@ -33,12 +33,14 @@ $(function(){
 		</div>
 		<div id="addr-print">
 			<a id="print">print</a>
-			<div id="addr">
-				<p>Collect Address</p>
-				<p>Woodlands DR 50<p>
-				<p>$#09-78<p>
-				<p>4793023<p>
-			</div>
+			#{if company?.addresses?.size() > 0}
+				<div id="addr">
+					<p>Address</p>
+					<p>Blk ${company.addresses.iterator().next().block} ${company.addresses.iterator().next().street}<p>
+					<p>${company.addresses.iterator().next().unit}<p>
+					<p>${company.addresses.iterator().next().postCode} Singapore<p>
+				</div>
+			#{/if}
 		</div>
 	</div>
 </div>

@@ -13,6 +13,7 @@ import java.util.UUID;
 import controllers.api.Error;
 
 import models.Access;
+import models.Company;
 import models.Deal;
 import models.Job;
 import models.RewardType;
@@ -98,7 +99,8 @@ public class JobController extends Controller{
 			}
 		}
 	
-		render(voucher);
+		Company company = job.task.user.companys.iterator().next();
+		render(voucher, company);
 	}
 	
 }

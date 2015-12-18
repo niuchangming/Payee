@@ -39,13 +39,14 @@ public class Profile extends Model{
 	
 	public Profile createProfileByUser(User user){
 		this.user = user;
-		this.addresses = new HashSet<Address>();
 		this.save();
 		
 		if(this.addresses != null){
 			for(Address address : this.addresses){
 				address.createAddressByProfile(this);
 			}
+		}else{
+			this.addresses = new HashSet<Address>();
 		}
 		
 		return this;
