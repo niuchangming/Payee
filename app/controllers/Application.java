@@ -109,7 +109,6 @@ public class Application extends Controller {
     	
     	renderTemplate("/Application/index.html", tasks, tags, tagId);
     }
-    
 }
 
 

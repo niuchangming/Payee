@@ -1,7 +1,7 @@
 page[size="A4"] {
   background: white;
   width: 960px;
-  padding: 10px;
+  padding: 10px 10px 60px 10px;
   display: block;
   margin: 0 auto;
 }
@@ -13,35 +13,32 @@ page[size="A4"] {
   }
 }
 
-h3{
-	margin: 10px 0;
-	padding: 0;
-	text-align: left;
-	text-align: center;
-}
-
-h3#task-title{
-	color: #333;
-	font-weight: 600;
+.title{
 	margin: 30px 0;
+	font-weight: 600;
+	text-align: center;
+	padding: 10px 0;
 }
 
 .row {
 	margin: 0 !important;
 }
 
-#task-header:after { 
-	content: " ";  
-	display:block;
-	clear: both;
-} 
+.under-line{
+	border-bottom: 1px dotted #ccc;
+	padding-bottom: 5px;
+}
 
-#task-header ul {
+.img-list{
+	margin-top: 30px;
+}
+
+ul {
 	list-style-type: none;
 	text-align: center;
 }
 
-#task-header ul li{
+ul li{
 	font-size: 24px;
 	position: relative;
 }
@@ -54,25 +51,42 @@ h3#task-title{
 	
 }
 
-#task-header ul li#price{	
+li#price{	
 	margin-left: 15px;
 	text-align: left;
 	padding-top: 36px;
 }
 
 .through{
-	text-decoration:line-through;
+	color:#8E8E93;
+	font-size: 0.9em;
 }
 
 .off{
-	margin-top: -8px;
 	font-size: 1.2em;
 	color: #ff4444;
+	font-weight: 600;
 }
 
 .bubble{
-	font-size: 0.5em;
-	color: #ff4444;
+	font-size: 0.6em;
+	margin-left: 5px;
+	color: white;
+	padding: 5px 3px;
+	background-color: #ff4444;
+	border-radius: 20px;
+	font-weight: 600;
+}
+
+.origin{
+	display: inline-block;
+	border-radius: 64px;
+	color: white;
+	padding: 10px 16px;
+	text-align: center;
+	font-weight: 600;
+	font-size: 1.3em;
+	background-color: #ff4444;
 }
 
 .task-tile{
@@ -81,10 +95,50 @@ h3#task-title{
 	margin: 15px 0;
 }
 
-.task-blk{
-	margin: 30px 0;
+#timer{	
+	width: 100%;
+	line-height: 100px;
 }
 
+#timer > div, #timer span{
+	display: inline-block;
+	line-height: 64px;
+	vertical-align: middle;
+	text-align: center;
+	background: -webkit-linear-gradient(#EF4DB6, #5AC8FB);	
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+#timer div:nth-child(1) span:nth-child(1){
+	font-size: 42px;
+	font-weight: 100;
+	height: 48px;
+	line-height: 48px;
+	display: block;
+}
+
+#timer div:nth-child(1) span:nth-child(2){
+	font-size: 14px;
+	font-weight: 100;
+	height: 16px;
+	line-height: 16px;
+	display: block;
+}
+
+#timer div:nth-child(2){
+	margin-left: 12px;
+	font-size: 36px;
+	font-weight: 100;
+}
+
+.note{
+	color: #FF4444;
+}
+
+.note > span{
+	font-size: 16px;
+}
 
 @media all and (max-width: 1076px){
     page {
@@ -99,14 +153,13 @@ h3#task-title{
     	width: 100%;
     }
     
-    #task-header ul{
-    	width: 100%;
+    ul{
+    	width: 100% !important;
     	padding-top: 30px;
     }
     
-    #task-header ul li{
+    ul li{
     	display: inline-block !important;
-    	padding: 0 !important;
     }
 }
 

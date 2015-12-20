@@ -3,6 +3,7 @@
 
 <link href="@{'/public/stylesheets/taskdetail.css'}" rel="stylesheet">
 <script src="@{'/public/javascripts/jquery.countdown.js'}" type="text/javascript"></script>
+<script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
 <script type="text/javascript">
 	$(function(){
 		$('#timer').countdown('${task.endDate}', function(event) {
@@ -13,7 +14,7 @@
 	function fbShare(){
 		FB.ui({
 			method: 'share',
-			href: '@{JobController.viewProduct(job?.token)}'
+			href: '${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token?.urlEncode()}'
 		});
 	}
 	
@@ -39,7 +40,7 @@
  </script>
 
 <page size="A4">
-	<h3 id="task-title">${task.title}</h3>
+	<h3 class="title">${task.title}</h3>
 	<div id="task-header">
 		<ul>
 			<li id="award">
@@ -70,12 +71,18 @@
 			
 			#{if job}
 				<li id="share">
-					<div>
-						<a class="sharebutton twitter">
-							<span>Twitter</span>
+					<div class="row">
+						<a class="share-btn col col-xs-12 col-sm-6 col-md-3" href='https://twitter.com/intent/tweet?url=${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token.urlEncode().urlEncode()}&text=${job.task.products.iterator().next().productName.urlEncode()}'>
+							<img src="../../public/images/twitter_icon.png">
 						</a>
-						<a class="sharebutton fb" onclick="fbShare();">
-							<span>Facebook</span>
+						<a class="share-btn col col-xs-12 col-sm-6 col-md-3" onclick="fbShare();">
+							<img src="../../public/images/facebook_icon.png">
+						</a>
+						<a class="share-btn col col-xs-12 col-sm-6 col-md-3" onclick="fbShare();">
+							<img src="../../public/images/wechat_icon.png">
+						</a>
+						<a class="share-btn col col-xs-12 col-sm-6 col-md-3" onclick="fbShare();">
+							<img src="../../public/images/moments_icon.png">
 						</a>
 					</div>
 				</li>
@@ -93,22 +100,22 @@
 	#{if job}
 		<div id="copy-link">
 			<p><span class="glyphicon glyphicon-link"></span>Copy this link and share with your friends</p>
-			<input id="share-link" class="form-control" value="${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token.urlEncode()}">
+			<input id="share-link" class="form-control" value='${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token.urlEncode()}'>
 		</div>
 	#{/if}
-	<div id="task-desc" class="task-blk">
-		<h3>Task Description</h3>
+	<div class="under-line">
+		<h3 class="title">Task Description</h3>
 		${task.description.raw()}
 	</div>
-	<div id="task-award" class="task-blk">
-		<h3>Reward Insruction</h3>
+	<div class="under-line">
+		<h3 class="title">Reward Insruction</h3>
 		${task.rewards?.iterator()?.next().instruction.raw()}
 	</div>
-	<div id="product-name" class="task-blk">
-		<h3>Product Description</h3>
+	<div class="under-line">
+		<h3 class="title">Product Description</h3>
 		${task.products?.iterator()?.next()?.description.raw()}
 	</div>
-	<div id="task-image" class="task-blk">
+	<div id="task-image" class="under-line">
 		#{list items:task?.images, as:'image'}
 		   <img class="task-tile" src="@{TaskController.getImage(image.id)}"/>
 		#{/list}

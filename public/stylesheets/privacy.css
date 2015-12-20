@@ -1,0 +1,12 @@
+h1{
+	font-size: 48px;
+    font-weight: 600;
+}
+#content{
+	width: 60%;
+	margin: 15px auto;
+	padding: 10px;
+	text-align: justify;
+	border-radius: 2px;
+    border: 1px solid #d6d6d6;
+}

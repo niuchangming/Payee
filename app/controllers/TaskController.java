@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import models.Company;
 import models.Coupon;
 import models.Job;
 import models.Reward;
@@ -14,6 +15,7 @@ import models.RewardImage;
 import models.RewardType;
 import models.Image;
 import models.Product;
+import models.Role;
 import models.Tag;
 import models.Task;
 import models.TaskImage;
@@ -33,11 +35,14 @@ public class TaskController extends Controller{
 		}
 		
 		User sessionUser = renderArgs.get("user", User.class);
-		User dbUser = User.findById(sessionUser.id);
+		Company company = Company.find("user_id = ?", sessionUser.id).first();
+		if(company == null){
+			renderText("Company cannot be found.");
+		}
 		
-		Task task = new Task(dbUser, title);
+		Task task = new Task(company, title);
 		
-		renderJSON(CommonUtil.toJson(task, "images", "tags", "rewards", "user"));
+		renderJSON(CommonUtil.toJson(task, "images", "tags", "rewards", "company"));
 	}
 	
 	public static void taskForm(long taskId){
@@ -126,13 +131,19 @@ public class TaskController extends Controller{
 	public static void allTask(int from, int max){
 		User sessionUser = renderArgs.get("user", User.class);
 		
-		long totalCount = Task.count("user_id = ? and is_delete = ?", sessionUser.id, false);
-
-		List<Task> tasks = Task.find("user_id = ? and is_delete = ?", sessionUser.id, false).from(from).fetch(max);
+		int totalCount = 0;
+		int pageIndex = 0;
 		
-		int pageIndex = (int) Math.ceil(from / max);
-		
-		render(tasks, pageIndex, totalCount);
+		if(sessionUser.role == Role.MERCHANT){
+			Company company = Company.find("user_id = ?", sessionUser.id).first();
+			totalCount = (int) Task.count("company_id = ? and is_delete = ?", company.id, false);
+			List<Task> tasks = Task.find("company_id = ? and is_delete = ?", company.id, false).from(from).fetch(max);
+			pageIndex = (int) Math.ceil(from / max);
+			
+			render(tasks, pageIndex, totalCount);
+		}else{
+			render(pageIndex, totalCount);
+		}
 	}
 	
 	public static void deleteTask(long taskId){

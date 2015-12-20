@@ -9,9 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import controllers.api.Error;
-
 import models.Access;
 import models.Company;
 import models.Deal;
@@ -99,7 +97,7 @@ public class JobController extends Controller{
 			}
 		}
 	
-		Company company = job.task.user.companys.iterator().next();
+		Company company = job.task.company;
 		render(voucher, company);
 	}
 	

@@ -63,9 +63,6 @@ public class User extends Model{
 	public Set<Profile> profiles;
 	
 	@OneToMany(mappedBy = "user")
-	public Set<Task> tasks;
-	
-	@OneToMany(mappedBy = "user")
 	public Set<Job> jobs;
 	
 	@ManyToOne(cascade=CascadeType.ALL)    
@@ -79,7 +76,6 @@ public class User extends Model{
 		this.registerDateTime = new Date();
 		this.isActive = false;
 		this.role = Role.NORMAL;
-		this.tasks = new HashSet<Task>();
 		this.profiles = new HashSet<Profile>();
 		this.avatars = new HashSet<Avatar>();
 		this.companys = new HashSet<Company>();
@@ -90,11 +86,6 @@ public class User extends Model{
 	
 	public void updateByRole(Role role){
 		this.role = role;
-		this.save();
-	}
-	
-	public void updateByTask(Task task){
-		this.tasks.add(task);
 		this.save();
 	}
 	

@@ -32,8 +32,8 @@ import play.db.jpa.Model;
 public class Task extends Model{
 	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-	public User user;
+    @JoinColumn(name = "company_id")
+	public Company company;
 	
 	@Column(nullable = false)
 	public String title;
@@ -83,9 +83,9 @@ public class Task extends Model{
 	@Column(name="is_delete")
 	public boolean isDelete;
 
-	public Task(User user, String title) {
+	public Task(Company company, String title) {
 		this.title = title;
-		this.user = user;
+		this.company = company;
 		this.createDateTime = new Date();
 		this.isDelete = false;
 		this.isPubished = false;

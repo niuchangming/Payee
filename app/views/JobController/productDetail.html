@@ -16,50 +16,71 @@
 		<script type="text/javascript">
 			$(function(){
 				$('#qrcode').qrcode({width: 240,height: 240,text: "${qrcode}"});
+				
+				$('#timer').countdown('${task.endDate}', function(event) {
+					var $this = $(this).html(event.strftime('<div><span>%-D</span><span>%H:%M:%S</span></div><div>DAYS LEFT</div>'));
+				});
 			}); 
 		 </script>
     </head>
     <body>
 		<page size="A4">
-			<h3 id="task-title">${task.products.iterator().next().productName}</h3>
-			<div id="task-header">
-				<div class="row">
-					#{if task?.images?.size() > 0}
-						<div id="task-img" class="col col-xs-8 col-sm-8 col-md-8" style="background-image: url('@{TaskController.getImage(task?.images?.iterator()?.next()?.id)}');"></div>
+			<h3 class="title">${task.company.name}</h3>
+			<div id="task-header" class="row">
+				#{if task?.images?.size() > 0}
+					<div id="task-img" class="col col-xs-8 col-sm-8 col-md-8" style="background-image: url('@{TaskController.getImage(task?.images?.iterator()?.next()?.id)}');"></div>
+				#{/if}
+				<ul class="col col-xs-4 col-sm-4 col-md-4">
+					#{if task.products.iterator().next().coupons.iterator().next().value > 0}
+						<li id="qrcode"></li>
 					#{/if}
-					<ul class="col col-xs-4 col-sm-4 col-md-4">
-						#{if task.products.iterator().next().coupons.iterator().next().value > 0}
-							<li id="qrcode"></li>
-						#{/if}
-						<li id="price">  
-							<div>
-								#{if task.products.iterator().next().coupons.iterator().next().value > 0}
-									<span class="through">S$ ${task.products.iterator().next().price}</span><br/>
-									<span class="off">S$ ${task.products.iterator().next().coupons.iterator().next().value}</span><span class="bubble"> Off by merchant to scan</span>
-								#{/if}
-								#{else}
-									<span>S$ ${task.products.iterator().next().price}</span><br/>
-								#{/else}
-							</div>
-						</li>
-					</ul>
-				</div>
+					#{else}
+						<li id="timer" class="under-line"></li>
+					#{/else}
+					<li id="price">  
+						<div>
+							#{if task.products.iterator().next().coupons.iterator().next().value > 0}
+								<span class="through">S$${task.products.iterator().next().price}</span><br/>
+								<span class="off">S$${task.products.iterator().next().coupons.iterator().next().value}</span><span class="bubble"> Off by merchant scan</span>
+							#{/if}
+							#{else}
+								<span class="origin">S$${task.products.iterator().next().price}</span>
+							#{/else}
+						</div>
+					</li>
+				</ul>
 			</div>
-			<div id="task-desc" class="task-blk">
-				<h3>${task.products.iterator().next().productName}</h3>
+			<div class="under-line">
+				<h3 class="title">${task.products.iterator().next().productName}</h3>
 				${task.products.iterator().next().description.raw()}
 			</div>
 			#{if task.rewards.iterator().next().rewardType.getName() == 'commission'}
-				<div id="task-award" class="task-blk">
-					<h3>Coupon Insruction</h3>
+				<div class="under-line">
+					<h3 class="title">Term & Conditions</h3>
 					${task.products.iterator().next().coupons.iterator().next().instruction.raw()}
+					<p class="note">
+						<span class="glyphicon glyphicon-info-sign"></span>
+						If Merchants/shoppers refuses to scan QR Code of vouchers/coupons, consumers/users has right to report the breaches to us with relevant certificates such as receipt. If we verify that they breaches any obligation to consumers, users and/or Task Workers, the Task Poster will receive punishment which must pay the penalty equivalent to 3 times of the reward to the reporter as a reward or MooTask has the right to remove the MooTask account of the merchant/shopper without any indemnity.
+					</p>
 				</div>
 			#{/if}
-			<div id="task-image" class="task-blk">
+			<div class="under-line">
+				<h3 class="title">How to go there ?</h3>
+				#{list items:task?.company?.addresses, as:'address'}
+				   <p>${address.block} ${address.street} ${address.unit} Singapore ${address.postCode}</p>
+				#{/list}
+			</div>
+			<div class="img-list">
 				#{list items:task?.images, as:'image'}
 				   <img class="task-tile" src="@{TaskController.getImage(image.id)}"/>
 				#{/list}
 			</div>
 		</page>
+		<div id="footer">
+        	<p>Copyright ©2014-2020 EKOO LAB PTE LTD. All Rights Reserved.</p>
+        	<div>
+        		<a href="@{PrivacyController.privatePrivacy()}">Private Privacy</a> | <a href="@{PrivacyController.termsAndConditions()}">Terms and Conditions</a>
+        	</div>
+        </div>
     </body>
 </html>

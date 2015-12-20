@@ -63,9 +63,16 @@ public class JobController extends Controller {
 				"task.rewards.images.image",
 				"task.rewards.images.file",
 				"task.rewards.images.store",
-				"task.rewards.task.images.image",
-				"task.rewards.task.images.file",
-				"task.rewards.task.images.store",
+				"task.company.frontIC",
+				"task.company.backIC",
+				"task.company.businessCert",
+				"task.company.logos.thumbnail",
+				"task.company.logos.image",
+				"task.company.logos.file",
+				"task.company.logos.store",
+				"task.company.addresses.profile",
+				"task.company.addresses.company",
+				"task.company.tasks",
 				"vouchers",
 				"deals.job",
 				"accesses"));
@@ -163,7 +170,8 @@ public class JobController extends Controller {
 			renderJSON(new Error("Job cannot be found."));
 		}
 		
-		User authorisedUser = User.find("(access_token = ? and boss_id = ?) or (access_token = ?)", accessToken, job.task.user.id, job.task.user.accessToken).first();
+		User taskCreator = job.task.company.user;
+		User authorisedUser = User.find("(access_token = ? and boss_id = ?) or (access_token = ?)", accessToken, taskCreator.id, taskCreator.accessToken).first();
 		if(authorisedUser == null){
 			renderJSON(new Error("Permission error."));
 		}else{
@@ -189,7 +197,8 @@ public class JobController extends Controller {
 			renderJSON(new Error("The voucher has expired."));
 		}
 		
-		User authorisedUser = User.find("(access_token = ? and boss_id = ?) or (access_token = ?)", accessToken, job.task.user.id, job.task.user.accessToken).first();
+		User taskCreator = job.task.company.user;
+		User authorisedUser = User.find("(access_token = ? and boss_id = ?) or (access_token = ?)", accessToken, taskCreator.id, taskCreator.accessToken).first();
 		if(authorisedUser == null){
 			renderJSON(new Error("Permission error."));
 		}else{

@@ -214,7 +214,7 @@ public class ProfileController extends Controller{
 			renderJSON(new Error("Task cannot be found."));
 		}
 		
-		Set<Address> addresses = task.user.companys.iterator().next().addresses;
+		Set<Address> addresses = task.company.addresses;
 		
 		renderJSON(CommonUtil.toJson(addresses, 
 				"*.id", 

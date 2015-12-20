@@ -51,11 +51,15 @@ public class Company extends Model{
 	@Column(name="business_cert")
 	public Blob businessCert;
 	
+	@OneToMany(mappedBy = "company")
+	public Set<Task> tasks;
+	
 	public Company createCompanyByUser(User user){
 		this.user = user;
 		this.verifyStatus = VerifyStatus.UNVERIFY;
 		this.addresses = new HashSet<Address>();
 		this.logos = new HashSet<Logo>();
+		this.tasks = new HashSet<Task>();
 		return this.save();
 	}
 	
@@ -63,6 +67,12 @@ public class Company extends Model{
 		this.name = company.name;
 		this.description = company.description;
 		this.contactNo = company.contactNo;
+		this.fax = company.fax;
+		this.save();
+	}
+	
+	public void updateByTask(Task task){
+		this.tasks.add(task);
 		this.save();
 	}
 	

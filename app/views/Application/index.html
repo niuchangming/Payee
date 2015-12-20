@@ -72,8 +72,10 @@
 			  	<a class="add-job-btn glyphicon glyphicon-plus-sign" onclick="#{if user}addJob(${task?.id});#{/if}#{else}showAlertToast('Error: You have to login first.', 'alert-danger');#{/else}"></a>
 			</div>
 		#{/list}
-		 <a class="next-link" #{if tagId} href="@{Application.getTasksByRange(tasks.size(), tagId)}" #{/if} 
+		#{if tasks.size() > 0}
+		 	<a class="next-link" #{if tagId} href="@{Application.getTasksByRange(tasks.size(), tagId)}" #{/if} 
 		 						#{else} href="@{Application.getTasksByRange(tasks.size(), -1)}" #{/else}>next page</a>
+		#{/if}
 	</div>
 
 </div>
@@ -96,13 +98,14 @@ $(function(){
 		$('body').toggleClass('menu-active');
 	});
 	
-	$('#task-container').jscroll({
-	    nextSelector: 'a.next-link',
-	    callback: function(){
-	    	
-	    }
-	});
-	
+	if($(".task-cell").length > 0){
+		$('#task-container').jscroll({
+		    nextSelector: 'a.next-link',
+		    callback: function(){
+		    	
+		    }
+		});
+	}
 });
 
 function addJob(id){
