@@ -11,5 +11,4 @@ public class PrivacyController extends Controller{
 	public static void termsAndConditions(){
 		render();
 	}
-
 }

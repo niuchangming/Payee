@@ -64,7 +64,7 @@ public class Application extends Controller {
     }
     
     public static void searchTask(String text){
-    	List<Task> tasks = Task.find("title like ? and end_date >= ? order by create_datetime desc", "%" + text + "%", new Date()).fetch();
+    	List<Task> tasks = Task.find("title like ? and end_date >= ? and is_delete = false order by create_datetime desc", "%" + text + "%", new Date()).fetch();
     	
     	List<Tag> tags = Tag.find("parentTag is null").fetch();
 		
