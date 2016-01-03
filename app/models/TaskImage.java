@@ -7,6 +7,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -22,10 +23,19 @@ public class TaskImage extends Image{
 	@JoinColumn(name = "task_id")
 	public Task task;
 	
+	@Lob
+	public String caption;
+	
 	public TaskImage(Task task, Blob blob) {
 		super(blob);
 		this.task = task;
+		this.caption = "";
 		this.setThumbnail(blob);
+		this.save();
+	}
+	
+	public void updateByCaption(String caption){
+		this.caption = caption;
 		this.save();
 	}
 

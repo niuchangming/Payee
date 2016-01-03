@@ -115,6 +115,28 @@ public class TaskController extends Controller{
 		renderText(image.id);
 	}
 	
+	public static void imageCaption(long imageId, String caption){
+		TaskImage image = TaskImage.findById(imageId);
+		if(image == null){
+			renderText("Cannot found image.");
+		}
+		
+		if(caption.length() > 0){
+			caption = caption.replace("<!--StartFragment-->", "").replace("<!--EndFragment-->", "");
+		}
+		image.updateByCaption(caption);
+		
+		renderJSON(CommonUtil.toJson(image, 
+				"*.class",
+				"*.task",
+				"*.id",
+				"*.persistent",
+				"thumbnail",
+				"image",
+				"file",
+				"store"));
+	}
+	
 	public static void deleteImage(long taskId, long imageId){
 		Task task = Task.findById(taskId);
 		if(task == null){

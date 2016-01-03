@@ -106,24 +106,29 @@
 	font-size: 32px;
 }
 
-.del-link{
+.link {
 	position: absolute;
 	width: 24px;
 	height: 24px;
 	border-radius: 12px;
 	background-color: white;
 	text-align: center;
-	right: 5px;
 	top: 5px;
 }
 
-.del-link > i{
+.link > i{
 	top: 4px !important;
 	right: 1px !important;
 }
 
 .del-link{
+	right: 5px;
 	color: #FF4444;
+}
+
+.caption-link {
+    right: 32px;
+    color: #5AC8FB;
 }
 
 .image-note{
@@ -162,6 +167,10 @@ input#reward-img:focus{
 
 #save-task-btn{
 	float: right;
+}
+
+.caption-wraper{
+	width: 100% !important;
 }
 
 

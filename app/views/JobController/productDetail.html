@@ -73,6 +73,9 @@
 			<div class="img-list">
 				#{list items:task?.images, as:'image'}
 				   <img class="task-tile" src="@{TaskController.getImage(image.id)}"/>
+				   #{if image?.caption?.length() > 0}
+				   		${image?.caption.raw()}
+				   #{/if}
 				#{/list}
 			</div>
 		</page>
