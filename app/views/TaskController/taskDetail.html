@@ -34,15 +34,18 @@
 	        },
 	        error: function(request, status, err){
 	           	showAlertToast("Error: " + err, "alert-danger");
-	           }
+	        }
 	    });
 	}
  </script>
 
 <page size="A4">
 	<h3 class="title">${task.title}</h3>
-	<div id="task-header">
-		<ul>
+	<div id="task-header" class="row">
+		#{if task?.images?.size() > 0}
+			<div id="task-img" class="col col-xs-8 col-sm-8 col-md-8" style="background-image: url('@{TaskController.getImage(task?.images?.iterator()?.next()?.id)}');"></div>
+		#{/if}
+		<ul class="col col-xs-4 col-sm-4 col-md-4">
 			<li id="award">
 				<div id="circle-outer">
 					<div id="circle-inner">
@@ -72,16 +75,16 @@
 			#{if job}
 				<li id="share">
 					<div class="row">
-						<a class="share-btn col col-xs-12 col-sm-6 col-md-3" href='https://twitter.com/intent/tweet?url=${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token.urlEncode().urlEncode()}&text=${job.task.products.iterator().next().productName.urlEncode()}'>
+						<a class="share-btn col col-xs-3 col-sm-3 col-md-3" href='https://twitter.com/intent/tweet?url=${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token.urlEncode().urlEncode()}&text=${job.task.products.iterator().next().productName.urlEncode()}'>
 							<img src="../../public/images/twitter_icon.png">
 						</a>
-						<a class="share-btn col col-xs-12 col-sm-6 col-md-3" onclick="fbShare();">
+						<a class="share-btn col col-xs-3 col-sm-3 col-md-3" onclick="fbShare();">
 							<img src="../../public/images/facebook_icon.png">
 						</a>
-						<a class="share-btn col col-xs-12 col-sm-6 col-md-3" onclick="fbShare();">
+						<a class="share-btn col col-xs-3 col-sm-3 col-md-3" onclick="fbShare();">
 							<img src="../../public/images/wechat_icon.png">
 						</a>
-						<a class="share-btn col col-xs-12 col-sm-6 col-md-3" onclick="fbShare();">
+						<a class="share-btn col col-xs-3 col-sm-3 col-md-3" onclick="fbShare();">
 							<img src="../../public/images/moments_icon.png">
 						</a>
 					</div>
@@ -93,9 +96,6 @@
 				</li>
 			#{/else}
 		</ul>
-		#{if task?.images?.size() > 0}
-			<div id="task-img" style="background-image: url('@{TaskController.getImage(task?.images?.iterator()?.next()?.id)}');"></div>
-		#{/if}
 	</div>
 	#{if job}
 		<div id="copy-link">

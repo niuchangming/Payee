@@ -29,12 +29,7 @@ page[size="A4"] {
 }
 
 #task-header ul {
-	width: 40%;
-	height: 300px;
 	list-style-type: none;
-	float: left;
-	padding-left: 10px;
-	clear:both;
 	text-align: -webkit-center;
 }
 
@@ -46,9 +41,7 @@ page[size="A4"] {
 }
 
 #task-img{
-	width: 60%;
-	float: right;
-	height: 300px;
+	min-height: 300px;
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -128,6 +121,7 @@ page[size="A4"] {
 	display: inline-block;
 	top: -67px;
 	padding: 8px;
+	left: 10px;
 	text-indent: 72px;
 	font-size: 16px;
 	border-radius: 5px;
@@ -228,6 +222,28 @@ li#share{
 	width: 60px;
 }
 
+@media all and (max-width: 1076px){
+    page {
+    	width: 100% !important;
+    }
+    
+    #task-img{
+    	width: 100% !important;
+    }
+    
+    ul{
+    	width: 100% !important;
+    	padding-top: 30px;
+    }
+    
+    ul li{
+    	display: inline-block !important;
+    }
+    
+    li#share{
+    	line-height: 100px;
+    }
+}
 
 
 
@@ -236,7 +252,3 @@ li#share{
 
 
 
-
-
-
-Displaying detailpage.css.

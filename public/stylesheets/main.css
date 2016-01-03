@@ -301,8 +301,30 @@ form .alert{
 		display: block;
 	}
 	
-	#home-link, #tools, #tool-bar{
+	#home-link, #tools{
 		display: none;
+	}
+	
+	#tool-bar{
+		height: 157px;
+	}
+	
+	#search-form{
+		position: relative;
+		width: 280px;
+	}
+	
+	#search-input{
+		width: 280px;
+	}
+	
+	#search-bar{
+		position:relative;
+		margin-top: 15px;
+	}
+	
+	#tag-menu{
+		padding: 0;
 	}
 	
 	#content{
