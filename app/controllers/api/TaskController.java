@@ -132,7 +132,32 @@ public class TaskController extends Controller{
 				"childrenTags.childrenTags"));
 	}
 	
-	
+	public static void getTasksByUser(String accessToken){
+		User dbUser = User.find("byAccessToken", accessToken).first();
+		if(dbUser == null){
+			renderJSON(new Error("User cannot be found."));
+		}
+		
+		List<Task> tasks = Task.find("company_id = ? and end_date >= ? and is_delete = false order by create_datetime desc",dbUser.companys.iterator().next().id, new Date()).fetch();
+		
+		renderJSON(CommonUtil.toJson(tasks,
+				"*.class",
+				"*.task",
+				"*.id",
+				"*.persistent",
+				"*.user",
+				"*.job",
+				"*.reward",
+				"company",
+				"tags",
+				"products", 
+				"rewards", 
+				"images.thumbnail",
+				"images.image",
+				"images.file",
+				"images.store",
+				"jobs.accesses"));
+	}
 	
 	
 	

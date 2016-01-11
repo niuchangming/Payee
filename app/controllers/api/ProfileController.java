@@ -152,6 +152,29 @@ public class ProfileController extends Controller{
 		renderJSON(CommonUtil.toJson(address, "profile", "company", "*.id", "*.persistent", "*.class"));
 	}
 	
+	public static void getCompanyInfo(String accessToken){
+		User user = User.find("byAccessToken", accessToken).first();
+		
+		if(user == null){
+			renderJSON(new Error("Invalid access token"));
+		}
+		
+		renderJSON(CommonUtil.toJson(user.companys, 
+				"*.id", 
+				"*.persistent", 
+				"*.class",
+				"*.user",
+				"*.profile",
+				"*.company",
+				"tasks",
+				"frontIC", 
+				"backIC", 
+				"businessCert",
+				"logos.file",
+				"logos.image",
+				"logos.store"));
+	}
+	
 	public static void updateCompanyBasicInfo(String accessToken, String companyName, String description, String contactNo, String fax){
 		User user = User.find("byAccessToken", accessToken).first();
 		
@@ -175,7 +198,17 @@ public class ProfileController extends Controller{
 			company.createCompanyByUser(user);
 		}
 		
-		renderJSON(CommonUtil.toJson(company, "*.id", "*.persistent", "*.class", "user", "frontIC", "backIC", "businessCert"));
+		renderJSON(CommonUtil.toJson(company, 
+				"*.id", 
+				"*.persistent", 
+				"*.class", 
+				"user", 
+				"frontIC", 
+				"backIC", 
+				"businessCert",
+				"logos.file",
+				"logos.image",
+				"logos.store"));
 	}
 	
 	public static void uploadCompanyLogo(String accessToken, Blob image){

@@ -34,61 +34,32 @@
 }
 
 .item-info{
+	width: 100%;
 	height: auto;
+	margin-left: -15px;
 	overflow:hidden;
 	position: absolute;
-	bottom: -72px;
+	bottom: -48px;
 }
 
-.item-info > span{
-	width: 100%;
-	color: #444;
-	display: inline-block;
+.company-info > span{
+	height: 14px;
+	line-height: 14px;
+	color: #8E8E93;
+	font-size: 0.9em; 
+	overflow: hidden;
 }
 
-.item-info > span.title{
-	font-size: 1em;
-	font-weight: 600;
+.task-title{
 	height: 20px;
-	line-height:20px;
+	line-height: 20px;
 	overflow: hidden;
 }
 
-.item-info > span.summary{
-	font-size: 1.0em;
-	height: 42px;
-	line-height: 21px;
-	overflow: hidden;
-}
-
-.item-info > hr{
-	margin: 6px 0;
-}
-
-p.reward{
-	font-size: 1.5em;
-	line-height: 30px;
-	color: #FF4444;
-	font-weight: 600;
-	display: inline-block;
-}
-
-p.reward > span{
-	color: #333;
-	font-weight: 300;
-	font-size: 0.5em;
-}
-
-.add-job-btn{
-	color: #4CD964;
-	font-size: 1.5em;
-	position: absolute;
-    top: 110%;
-    right: 15px;
-}
-
-.add-job-btn:hover{
-	color: #A4E786;
+.company-logo{
+	width:30px;
+	height:30px;
+	border-radius: 15px;
 }
 
 .content-item > div{

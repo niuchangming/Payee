@@ -4,12 +4,47 @@
 <link href="@{'/public/stylesheets/taskdetail.css'}" rel="stylesheet">
 <script src="@{'/public/javascripts/jquery.countdown.js'}" type="text/javascript"></script>
 <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script type="text/javascript">
 	$(function(){
 		$('#timer').countdown('${task.endDate}', function(event) {
 			var $this = $(this).html(event.strftime('<div><span>%-D</span><span>%H:%M:%S</span></div><div>DAYS LEFT</div>'));
 		});
-	}); 
+		
+		/*
+		 var timestamp;
+		 var nonceStr;
+		 var signature;
+		 $.ajax({
+		        url:"/api/WXComtroller/getConfig", 
+		        async:true,
+		        type:'get',  
+		        cache:false,    
+		        dataType:'json',    
+		        success:function(data) {    
+		                if(data!=null){    
+		                    timestamp=data.timestamp;
+		                    nonceStr=data.nonceStr;
+		                    signature=data.signature;
+		                    wx.config({
+		                        debug: false, 
+		                        appId: "wxea51457ffb869624", 
+		                        timestamp:timestamp, 
+		                        nonceStr: nonceStr, 
+		                        signature: signature,
+		                        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage'] // 功能列表
+		                    });
+		                }else{
+		                	showAlertToast("Error: " + "Data is empty.", "alert-danger");
+		                }
+		        },    
+		        error : function(jqXHR, e) { 
+		        	showAlertToast("Error: " + e, "alert-danger");
+		        }    
+		  });
+		 */
+		 
+	});
 	
 	function fbShare(){
 		FB.ui({
