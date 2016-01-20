@@ -12,6 +12,11 @@ public class Interceptor extends Controller{
 	@Before(priority = 1, unless={"Application.searchTask", 
 								"TaskController.taskDetail", 
 								"TaskController.getImage", 
+								"TaskController.showTaskImageThumbnail",
+								"TaskController.wxShare",
+								"ProfileController.showCompanyLogo",
+								"ProfileController.showLogoById",
+								"ProfileController.showAvatar",
 								"JobController.viewProduct",
 								"JobController.scanReciever"})
 	static void authenticated() {

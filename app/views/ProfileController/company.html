@@ -222,8 +222,8 @@
                 success: function(response, status) {
                 	if(status == "success"){
                 		var jsonData = jQuery.parseJSON(JSON.stringify(response));
-                		$('#logo-link').css('background-image', 'url(' + jsonData.thumbnailPath + ')');
-                		$('img#logo').attr('src', jsonData.thumbnailPath);
+                		$('#logo-link').css('background-image', "url(" + "/ProfileController/showLogoById?id=" + jsonData.id + ")");
+                		$('img#logo').attr('src', '/ProfileController/showAvatarById?id=' + jsonData.id);
                 		$('#logo-edit-model').modal('hide');
                 	}
                 },

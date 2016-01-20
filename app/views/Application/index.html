@@ -50,11 +50,11 @@
 	<div id="task-container">
 		#{list items:tasks, as:'task'}
 			<div class="col col-xs-12 col-sm-6 col-md-3 task-cell">
-				<a class="tile" href="@{TaskController.taskDetail(task.id)}" target="_blank" style="background-image: url('#{if task?.images.size() > 0}${task?.images?.iterator()?.next()?.thumbnailPath}#{/if}#{else}../../public/images/default_image.jpg#{/else}');">
+				<a class="tile" href="@{TaskController.taskDetail(task.id)}" target="_blank" style="background-image: url('#{if task?.images.size() > 0}@{TaskController.showTaskImageThumbnail(task?.images?.iterator()?.next()?.id)}#{/if}#{else}../../public/images/default_image.jpg#{/else}');">
 				</a>
 				<div class="item-info">
 					<div class="company-info">
-						<img class="company-logo" src="${task?.company?.logos?.iterator()?.next()?.thumbnailPath}"/>
+						<img class="company-logo" src="@{ProfileController.showCompanyLogo(task?.company?.id)}"/>
 						<span class="company-name">${task?.company?.name}</span>
 					</div>
 					<p class="task-title">${task.title}</p>
@@ -97,24 +97,5 @@ $(function(){
 	}
 });
 
-function addJob(id){
-	$.ajax({
-        url: "/JobController/addJob",
-        type: "POST",
-        data: {
-        	taskId: id
-		},
-        success: function(response, status) {
-        	if(status == "success" && response > 0){
-        		showAlertToast("Successfully added the job, go to your dashboard to view your jobs.", "alert-success");
-        	}else{
-        		showAlertToast("Error: " + response, "alert-danger");
-        	}
-        },
-        error: function(request, status, err){
-           	showAlertToast("Error: " + err, "alert-danger");
-        }
-    });
-}
 </script>
 

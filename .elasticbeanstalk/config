@@ -1,0 +1,13 @@
+[global]
+ApplicationName=MooTask
+DevToolsEndpoint=git.elasticbeanstalk.ap-southeast-1.amazonaws.com
+EnvironmentName=MooTask-env
+EnvironmentTier=WebServer::Standard::1.0
+EnvironmentType=SingleInstance
+InstanceProfileName=aws-elasticbeanstalk-ec2-role
+OptionSettingFile=C:\Apps\play-1.2.5.3\payee\.elasticbeanstalk\optionsettings.MooTask-env
+RdsEnabled=No
+Region=ap-southeast-1
+ServiceEndpoint=https://elasticbeanstalk.ap-southeast-1.amazonaws.com
+SolutionStack=64bit Amazon Linux 2015.09 v2.0.6 running Tomcat 7 Java 7
+

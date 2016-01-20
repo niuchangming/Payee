@@ -10,21 +10,26 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Map;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import flexjson.JSONSerializer;
+
 import models.Job;
 import models.Task;
 import models.User;
+import models.WXConfig;
+import play.cache.Cache;
 import play.mvc.Controller;
 import utils.CommonUtil;
+import utils.WXTicketCache;
+import utils.WXTicketUtil;
 
 public class WXComtroller extends Controller{
-	private static String token = "mootaskweixin";
-	private static String APPID = "wxea51457ffb869624";
-	private static String APPSECRET = "c2cafbffe86dba7cb54ac51e9dc4f833";
+	private final static String token = "mootaskweixin";
 	
 	public static void checkSignature(String signature, String timestamp, String nonce, String echostr) {
         String[] arr = new String[] { token, timestamp, nonce };
@@ -52,54 +57,6 @@ public class WXComtroller extends Controller{
         }
     }
 	
-	public static void getConfig(){
-		String url = "https://api.wechat.com/cgi-bin/token?grant_type=client_credential&appid="+ APPID +"&secret=" + APPSECRET;
-		try {
-			String response = getWXAccessToken(url);
-			JsonElement jelement = new JsonParser().parse(response);
-			JsonObject jsonObj = jelement.getAsJsonObject();
-			String accessToken = jsonObj.get("access_token").toString();
-			if(!CommonUtil.isBlank(accessToken)){
-				String ticket = getWXTicket(accessToken);
-				System.out.println("-----> " + ticket);
-			}
-		} catch (Exception e) {
-			renderText("Error: " + e.getMessage());
-		}
-	}
-	
-	private static String getWXAccessToken(String urlToRead) throws Exception {
-		StringBuilder result = new StringBuilder();
-		URL url = new URL(urlToRead);
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("GET");
-		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		String line;
-		while ((line = rd.readLine()) != null) {
-			result.append(line);
-		}
-		rd.close();
-		return result.toString();
-	}
-	
-	private static String getWXTicket(String accessToken) throws IOException{
-		StringBuilder result = new StringBuilder();
-		String ticketUrl="https://api.wechat.com/cgi-bin/ticket/getticket?type=jsapi&access_token="+accessToken;
-		URL url = new URL(ticketUrl);
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("GET");
-		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		String line;
-		while ((line = rd.readLine()) != null) {
-			result.append(line);
-		}
-		rd.close();
-		return result.toString();
-	}
-	
-	public static void main(String[] args){
-		getConfig();
-	}
 }
 
 

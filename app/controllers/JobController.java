@@ -1,8 +1,10 @@
 package controllers;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.Inet4Address;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashSet;
@@ -18,10 +20,13 @@ import models.RewardType;
 import models.Task;
 import models.User;
 import models.Voucher;
+import models.WXConfig;
 import play.mvc.Controller;
 import play.mvc.With;
 import utils.AES;
 import utils.CommonUtil;
+import utils.WXTicketCache;
+import utils.WXTicketUtil;
 
 @With(Interceptor.class)
 public class JobController extends Controller{
@@ -75,9 +80,8 @@ public class JobController extends Controller{
 			job.updateByAccess(new Access(job, request.remoteAddress));
 		}
 		
-		Task task = job.task;
 		String qrcode = jobToken + "|" + UUID.randomUUID().toString().trim() + "|coupon"; 
-		renderTemplate("/JobController/productDetail.html", task, qrcode);
+		renderTemplate("/JobController/productDetail.html", job, qrcode);
 	}
 	
 	public static void voucher(long jobId, double value){
@@ -100,6 +104,26 @@ public class JobController extends Controller{
 		Company company = job.task.company;
 		render(voucher, company);
 	}
+	
+//	public static void wxShare(){
+//		WXConfig config = null;
+//		try {
+//			String sharedUrl = play.Play.configuration.getProperty("application.baseUrl") 
+//					+ "taskcontroller/wxshare";
+//			WXTicketCache ticketCache= WXTicketCache.getInstance();
+//	        String ticket=ticketCache.getWXTicketCache().getTicket();
+//	        if(CommonUtil.isBlank(ticket)){
+//				ticket = WXTicketUtil.getWXTicket().getTicket();
+//	        }
+//	        
+//	        config = WXTicketUtil.sign(ticket, sharedUrl);
+//		} catch (UnsupportedEncodingException e) {
+//			throw new RuntimeException(e.getMessage());
+//		} catch (IOException e) {
+//			throw new RuntimeException(e.getMessage());
+//		}
+//		render(config);
+//	}
 	
 }
 

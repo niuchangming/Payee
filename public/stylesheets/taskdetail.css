@@ -134,8 +134,13 @@ page[size="A4"] {
 }
 
 li#share{
-	display: table-cell;
+	width: 100%;
+	line-height: 100px;
     vertical-align: middle;
+}
+
+.share-btn{
+	margin: 0 10px;
 }
 
 .share-btn > img{

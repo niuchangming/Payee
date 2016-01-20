@@ -19,6 +19,81 @@
 	
 	
 Import local database to AWS(RDS): 
-mysqldump -u root --databases payee_db --single-transactio
-n --compress --order-by-primary -pfx1021665 | mysql -u changming --port=3306 --h
-ost=payee.cs5q9ptjrlz8.ap-southeast-1.rds.amazonaws.com -pfx1021665
+mysqldump -u root --databases payee_db --single-transaction --compress --order-by-primary -pfx1021665 | mysql -u changming --port=3306 --host=payee.cs5q9ptjrlz8.ap-southeast-1.rds.amazonaws.com -pfx1021665
+
+WXConfig config = null;
+if(fromQRCode){
+	try {
+		String sharedUrl = play.Play.configuration.getProperty("application.baseUrl") 
+				+ "JobController/viewProduct?jobToken=" + URLEncoder.encode(jobToken, "UTF-8");
+		WXTicketCache ticketCache= WXTicketCache.getInstance();
+        String ticket=ticketCache.getWXTicketCache().getTicket();
+        if(CommonUtil.isBlank(ticket)){
+			ticket = WXTicketUtil.getWXTicket().getTicket();
+        }
+        
+        config = WXTicketUtil.sign(ticket, sharedUrl);
+	} catch (UnsupportedEncodingException e) {
+		throw new RuntimeException(e.getMessage());
+	} catch (IOException e) {
+		throw new RuntimeException(e.getMessage());
+	}
+}
+
+
+wx.config({
+    debug: true, 
+    appId: "wxeee8473b3968d003",
+    timestamp: '${config?.timestamp}', 
+    nonceStr: '${config?.nonceStr}', 
+    signature: '${config?.signature}',
+    jsApiList: ['checkJsApi', 'onMenuShareTimeline', 'onMenuShareAppMessage']
+});
+
+wx.ready(function () {
+    wx.onMenuShareAppMessage({
+		title: '${job.task.title}',
+		link: '${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token?.urlEncode()}',
+		imgUrl: 'http://img3.wikia.nocookie.net/__cb20110115224542/rihanna/images/c/c7/Msc_2010_10_22_rihanna_loud_thumb-64x64.jpg',
+		success: function (res) {
+			showAlertToast("Successfully.", "alert-success");
+		},
+		cancel: function (res) {
+			showAlertToast("Cancel", "alert-danger");
+		},
+		fail: function (res) {
+		 	showAlertToast(res.errMsg, "alert-danger");
+		}
+    });
+  
+	wx.onMenuShareTimeline({
+	    title: '${job.task.title}',
+	    link: '${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token?.urlEncode()}', 
+	    imgUrl: 'http://img3.wikia.nocookie.net/__cb20110115224542/rihanna/images/c/c7/Msc_2010_10_22_rihanna_loud_thumb-64x64.jpg',
+	    success: function () { 
+	    	showAlertToast("Successfully.", "alert-success");
+	    },
+	    cancel: function () { 
+	    	showAlertToast("Cancel", "alert-danger");
+	    },
+	    fail: function (res) {
+	    	showAlertToast(res.errMsg, "alert-danger");
+        }
+	});
+});
+
+wx.error(function(res){
+	showAlertToast(res.errMsg, "alert-danger");
+});
+
+
+function is_weixn(){
+    var ua = navigator.userAgent.toLowerCase();
+    if(ua.match(/MicroMessenger/i)=="micromessenger") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+

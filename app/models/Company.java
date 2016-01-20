@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import play.db.jpa.Blob;
 import play.db.jpa.Model;
+import play.modules.s3blobs.S3Blob;
 
 @Entity
 @Table(name="company")
@@ -43,13 +44,13 @@ public class Company extends Model{
 	public Set<Logo> logos;
 	
 	@Column(name="front_image")
-	public Blob frontIC;
+	public S3Blob frontIC;
 	
 	@Column(name="back_image")
-	public Blob backIC;
+	public S3Blob backIC;
 	
 	@Column(name="business_cert")
-	public Blob businessCert;
+	public S3Blob businessCert;
 	
 	@OneToMany(mappedBy = "company")
 	public Set<Task> tasks;

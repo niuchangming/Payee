@@ -155,8 +155,8 @@
                 success: function(response, status) {
                 	if(status == "success"){
                 		var jsonData = jQuery.parseJSON(JSON.stringify(response));
-                		$('#avatar-link').css('background-image', 'url(' + jsonData.thumbnailPath + ')');
-                		$('img#avatar').attr('src', jsonData.thumbnailPath);
+                		$('#avatar-link').css('background-image', "url(" + "/ProfileController/showAvatarById?id=" + jsonData.id + ")");
+                		$('img#avatar').attr('src', '/ProfileController/showAvatarById?id=' + jsonData.id);
                 		$('#avr-edit-model').modal('hide');
                 	}
                 },

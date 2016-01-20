@@ -54,7 +54,21 @@ ul li{
 li#price{	
 	margin-left: 15px;
 	text-align: left;
-	padding-top: 36px;
+}
+
+li#share{
+	width: 100%;
+	margin: 17px 0;
+    vertical-align: middle;
+}
+
+.share-btn{
+	margin: 0 10px;
+}
+
+.share-btn > img{
+	width: 42px;
+	height: 42px;
 }
 
 .through{
@@ -158,9 +172,18 @@ li#price{
     	padding-top: 30px;
     }
     
-    ul li{
+    ul li#qrcode{
     	display: inline-block !important;
     }
+    
+    ul li#price{
+    	display: inline-block !important;
+    }
+    
+    ul li#award{
+    	width: 90%;
+    }
+    
 }
 
 

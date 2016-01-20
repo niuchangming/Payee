@@ -225,7 +225,7 @@
 	<h3>Product images</h3>
 	<div class="form-group image-wrap">
 		#{list items:task?.images, as:"image"}
-			<div id="${image.id}" class="col-xs-14 col-sm-6 col-md-4 col-lg-3 file-item" style="background-image: url('${image?.thumbnailPath}')">
+			<div id="${image.id}" class="col-xs-14 col-sm-6 col-md-4 col-lg-3 file-item" style="background-image: url('@{TaskController.showTaskImageThumbnail(image.id)}')">
 				<a class="link del-link"><i class="glyphicon glyphicon-trash"></i></a>
 				<a class="link caption-link" title="${image?.caption}" data-toggle="modal" data-target="#img-caption-model"><i class="glyphicon glyphicon-pencil"></i></a>
 			</div>
@@ -247,7 +247,7 @@
 	
 	<div class="form-group image-wrap">
 		#{list items:task?.rewards?.iterator()?.next()?.images, as:"image"}
-			<div id="${image.id}" class="col-xs-14 col-sm-6 col-md-4 col-lg-3 file-item" style="background-image: url('${image?.thumbnailPath}')">
+			<div id="${image.id}" class="col-xs-14 col-sm-6 col-md-4 col-lg-3 file-item" style="background-image: url('@{TaskController.showRewardImageThumbnail(image.id)}')">
 				<a class="link del-link"><i class="glyphicon glyphicon-trash"></i></a>
 			</div>
 		#{/list}

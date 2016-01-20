@@ -34,6 +34,8 @@ import play.cache.Cache;
 import play.data.Upload;
 import play.db.jpa.Blob;
 import play.db.jpa.JPA;
+import play.libs.MimeTypes;
+import play.modules.s3blobs.S3Blob;
 import play.mvc.Controller;
 import play.mvc.With;
 import utils.CommonUtil;
@@ -86,17 +88,31 @@ public class ProfileController extends Controller{
 		Avatar avatar = Avatar.find("user_id = ? order by uploaded_datetime desc", userId).first();
 		String path = Play.configuration.getProperty("images.path") + "/empty_avatar.png";
 		if(avatar != null){
-			path = avatar.thumbnailPath.replace(Play.configuration.getProperty("application.baseUrl"), "");
-		}
-		
-		try {
-			renderBinary(new FileInputStream(Play.getFile(path)));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			renderBinary(avatar.thumbnail.get());
+		}else{
+			try {
+				renderBinary(new FileInputStream(Play.getFile(path)));
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException(e.getMessage());
+			}
 		}
 	}
 	
-	public static void uploadAvatar(int x, int y, int width, int height, float ratio, Blob image){
+	public static void showAvatarById(long id){
+		Avatar avatar = Avatar.findById(id);
+		String path = Play.configuration.getProperty("images.path") + "/empty_avatar.png";
+		if(avatar != null){
+			renderBinary(avatar.thumbnail.get());
+		}else{
+			try {
+				renderBinary(new FileInputStream(Play.getFile(path)));
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+		}
+	}
+	
+	public static void uploadAvatar(int x, int y, int width, int height, float ratio, File image){
 		User sessionUser = renderArgs.get("user", User.class);
 		User dbUser = User.findById(sessionUser.id);
 		
@@ -108,10 +124,18 @@ public class ProfileController extends Controller{
 		
 		Iterator<Avatar> imageIterator = dbUser.avatars.iterator();
 		while(imageIterator.hasNext()){
-			imageIterator.next().delete();
+			imageIterator.next().doDelete();
 		}
 		
-		Avatar avatar = new Avatar(dbUser, x, y, width, height, ratio, image);
+		Avatar avatar = null;
+		try {
+			avatar = new Avatar(dbUser, x, y, width, height, ratio, image);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e.getMessage());
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		
 		renderJSON(CommonUtil.toJson(avatar, "*.class", "user", "task", "file", "store", "image"));
 	}
 	
@@ -146,7 +170,7 @@ public class ProfileController extends Controller{
 		renderText("success");
 	}
 	
-	public static void uploadCompanyLogo(int x, int y, int width, int height, float ratio, Blob image){
+	public static void uploadCompanyLogo(int x, int y, int width, int height, float ratio, File image){
 		User sessionUser = renderArgs.get("user", User.class);
 		Company dbCompany = Company.find("user_id = ?", sessionUser.id).first();
 		if(dbCompany == null){
@@ -157,15 +181,19 @@ public class ProfileController extends Controller{
 		if(image == null)
 			throw new RuntimeException("Logo object cannot be null.");
 		
-		if(!image.type().equals("image/jpeg") && !image.type().equals("image/png"))
-			throw new RuntimeException("Uploaded logo must be png or jpeg.");
-		
 		Iterator<Logo> logoIterator = dbCompany.logos.iterator();
 		while(logoIterator.hasNext()){
-			logoIterator.next().delete();
+			logoIterator.next().doDelete();
 		}
 		
-		Logo logo = new Logo(dbCompany, x, y, width, height, ratio, image);
+		Logo logo = null;
+		try {
+			logo = new Logo(dbCompany, x, y, width, height, ratio, image);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e.getMessage());
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 		renderJSON(CommonUtil.toJson(logo, "*.class", "user", "company", "file", "store", "image"));
 	}
 	
@@ -173,13 +201,27 @@ public class ProfileController extends Controller{
 		Logo logo = Logo.find("company_id = ? order by uploaded_datetime desc", companyId).first();
 		String path = Play.configuration.getProperty("images.path") + "/default_company_logo.png";
 		if(logo != null){
-			path = logo.thumbnailPath.replace(Play.configuration.getProperty("application.baseUrl"), "");
+			renderBinary(logo.thumbnail.get());
+		}else{
+			try {
+				renderBinary(new FileInputStream(Play.getFile(path)));
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException(e.getMessage());
+			}
 		}
-		
-		try {
-			renderBinary(new FileInputStream(Play.getFile(path)));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+	}
+	
+	public static void showLogoById(long id){
+		Logo logo = Logo.findById(id);
+		String path = Play.configuration.getProperty("images.path") + "/empty_avatar.png";
+		if(logo != null){
+			renderBinary(logo.thumbnail.get());
+		}else{
+			try {
+				renderBinary(new FileInputStream(Play.getFile(path)));
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException(e.getMessage());
+			}
 		}
 	}
 	
@@ -204,7 +246,7 @@ public class ProfileController extends Controller{
 		render(company);
 	}
 	
-	public static void verifyUpload(long companyId, Blob frontIC, Blob backIC, Blob bizFile){
+	public static void verifyUpload(long companyId, File frontIC, File backIC, File bizFile){
 		if(frontIC == null)
 			renderText("Your IC front side cannot be empty.");
 		
@@ -218,9 +260,19 @@ public class ProfileController extends Controller{
 		if(company == null)
 			renderText("Company cannot be found.");
 		
-		company.frontIC = frontIC;
-		company.backIC = backIC;
-		company.businessCert = bizFile;
+		try {
+			company.frontIC = new S3Blob();
+			company.frontIC.set(new FileInputStream(frontIC), MimeTypes.getContentType(frontIC.getName()));
+			
+			company.backIC = new S3Blob();
+			company.backIC.set(new FileInputStream(backIC), MimeTypes.getContentType(backIC.getName()));
+			
+			company.businessCert = new S3Blob();
+			company.businessCert.set(new FileInputStream(bizFile), MimeTypes.getContentType(bizFile.getName()));
+		} catch (FileNotFoundException e) {
+			renderText(e.getMessage());
+		}
+		
 		company.verifyStatus = VerifyStatus.PENDING;
 		company.save();
 		

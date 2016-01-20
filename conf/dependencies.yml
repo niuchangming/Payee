@@ -1,6 +1,10 @@
 # Application dependencies
 
 require:
-    - play
-    - play -> secure
-    - play -> crud
+    
+- play
+    
+- play -> secure
+    
+- play -> crud
+- play -> s3blobs 0.2

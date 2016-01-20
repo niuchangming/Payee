@@ -1,5 +1,11 @@
 package controllers;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
@@ -7,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import models.Avatar;
 import models.Company;
 import models.Coupon;
 import models.Job;
@@ -20,11 +27,15 @@ import models.Tag;
 import models.Task;
 import models.TaskImage;
 import models.User;
+import models.WXConfig;
+import play.Play;
 import play.cache.Cache;
 import play.db.jpa.Blob;
 import play.mvc.Controller;
 import play.mvc.With;
 import utils.CommonUtil;
+import utils.WXTicketCache;
+import utils.WXTicketUtil;
 
 @With(Interceptor.class)
 public class TaskController extends Controller{
@@ -83,34 +94,38 @@ public class TaskController extends Controller{
 		renderText(dbTask.id);
 	}
 	
-	public static void uploadRewardImage(long rewardId, Blob blob){
+	public static void uploadRewardImage(long rewardId, File blob){
 		if(blob == null)
 			throw new RuntimeException("Blob object cannot be null.");
-		
-		if(!blob.type().equals("image/jpeg") && !blob.type().equals("image/png"))
-			throw new RuntimeException("Uploaded image must be png or jpeg.");
 		
 		Reward reward = Reward.findById(rewardId);
 		if(reward == null)
 			throw new RuntimeException("Reward cannot be found by reward id: " + rewardId);
 		
-		RewardImage image = new RewardImage(reward, blob);
+		RewardImage image;
+		try {
+			image = new RewardImage(reward, blob);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 		renderText(image.id);
 	}
 	
-	public static void uploadProductImage(long taskId, Blob blob){
+	public static void uploadProductImage(long taskId, File blob){
 		if(blob == null)
 			throw new RuntimeException("Blob object cannot be null.");
-		
-		if(!blob.type().equals("image/jpeg") && !blob.type().equals("image/png"))
-			throw new RuntimeException("Uploaded image must be png or jpeg.");
 		
 		Task task = Task.findById(taskId);
 		
 		if(task == null)
 			throw new RuntimeException("Task cannot be found by task id: " + taskId);
 		
-		TaskImage image = new TaskImage(task, blob);
+		TaskImage image;
+		try {
+			image = new TaskImage(task, blob);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 		
 		renderText(image.id);
 	}
@@ -148,6 +163,34 @@ public class TaskController extends Controller{
 	public static void getImage(long imageId){
 		Image image = Image.findById(imageId);
 	    renderBinary(image.image.get());
+	}
+	
+	public static void showTaskImageThumbnail(long id){
+		TaskImage taskImage = TaskImage.findById(id);
+		String path = Play.configuration.getProperty("images.path") + "/empty_avatar.png";
+		if(taskImage != null){
+			renderBinary(taskImage.thumbnail.get());
+		}else{
+			try {
+				renderBinary(new FileInputStream(Play.getFile(path)));
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+		}
+	}
+	
+	public static void showRewardImageThumbnail(long id){
+		RewardImage rewardImage = RewardImage.findById(id);
+		String path = Play.configuration.getProperty("images.path") + "/empty_avatar.png";
+		if(rewardImage != null){
+			renderBinary(rewardImage.thumbnail.get());
+		}else{
+			try {
+				renderBinary(new FileInputStream(Play.getFile(path)));
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+		}
 	}
 	
 	public static void allTask(int from, int max){
@@ -193,7 +236,7 @@ public class TaskController extends Controller{
 		
 		render(task, job);
 	}
-
+	
 }
 
 

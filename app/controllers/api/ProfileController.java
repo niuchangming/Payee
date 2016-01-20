@@ -1,5 +1,8 @@
 package controllers.api;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +11,7 @@ import models.Address;
 import models.Avatar;
 import models.Company;
 import models.Image;
+import models.Logo;
 import models.Profile;
 import models.Role;
 import models.Task;
@@ -55,7 +59,7 @@ public class ProfileController extends Controller{
 				"cashiers.avatars.store"));
 	}
 	
-	public static void uploadAvatar(String accessToken, Blob image){
+	public static void uploadAvatar(String accessToken, File image){
 		User user = User.find("byAccessToken", accessToken).first();
 		
 		if(user == null)
@@ -69,7 +73,14 @@ public class ProfileController extends Controller{
 			imageIterator.next().delete();
 		}
 		
-		Avatar avatar = new Avatar(user, 0, 0, 0, 0, 0, image);
+		Avatar avatar = null;
+		try {
+			avatar = new Avatar(user, 0, 0, 0, 0, 0, image);
+		} catch (FileNotFoundException e) {
+			renderJSON(new Error(e.getMessage()));
+		} catch (IOException e) {
+			renderJSON(new Error(e.getMessage()));
+		}
 		renderJSON(CommonUtil.toJson(avatar, "*.class", "user", "task", "file", "store", "image"));
 	}
 	
@@ -211,7 +222,7 @@ public class ProfileController extends Controller{
 				"logos.store"));
 	}
 	
-	public static void uploadCompanyLogo(String accessToken, Blob image){
+	public static void uploadCompanyLogo(String accessToken, File image){
 		User user = User.find("byAccessToken", accessToken).first();
 		
 		if(user == null)
@@ -226,13 +237,20 @@ public class ProfileController extends Controller{
 			company.createCompanyByUser(user);
 		}
 		
-		Iterator<Avatar> imageIterator = user.avatars.iterator();
-		while(imageIterator.hasNext()){
-			imageIterator.next().delete();
+		Iterator<Logo> logoIterator = company.logos.iterator();
+		while(logoIterator.hasNext()){
+			logoIterator.next().delete();
 		}
 		
-		Avatar avatar = new Avatar(user, 0, 0, 0, 0, 0, image);
-		renderJSON(CommonUtil.toJson(avatar, "*.class", "user", "task", "file", "store", "image"));
+		Logo logo = null;
+		try {
+			logo = new Logo(company, 0, 0, 0, 0, 0, image);
+		} catch (FileNotFoundException e) {
+			renderJSON(new Error(e.getMessage()));
+		} catch (IOException e) {
+			renderJSON(new Error(e.getMessage()));
+		}
+		renderJSON(CommonUtil.toJson(logo, "*.class", "company", "file", "store", "image"));
 	}
 	
 	public static void companyAddresses(String accessToken, long taskId){

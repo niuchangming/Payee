@@ -1,89 +1,88 @@
-<!DOCTYPE html>
+#{extends 'main.html' /}
+#{set title:'Product Detail' /}
 
-<html>
-    <head>
-        <title>#{get 'title' /}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
-        <link rel="stylesheet" href="@{'/public/stylesheets/bootstrap/bootstrap.min.css'}">
-        <link rel="stylesheet" href="@{'/public/stylesheets/main.css'}">
-        <link href="@{'/public/stylesheets/productdetail.css'}" rel="stylesheet">
+<link href="@{'/public/stylesheets/productdetail.css'}" rel="stylesheet">
+<script src="@{'/public/javascripts/jquery.countdown.js'}" type="text/javascript"></script>
+<script src="@{'/public/javascripts/qrcode/jquery.qrcode.min.js'}" type="text/javascript"></script>
+<script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$('#qrcode').qrcode({width: 200,height: 200,text: "${qrcode}"});
+		
+		$('#timer').countdown('${job.task.endDate}', function(event) {
+			var $this = $(this).html(event.strftime('<div><span>%-D</span><span>%H:%M:%S</span></div><div>DAYS LEFT</div>'));
+		});
+	}); 
 	
-		<script src="@{'/public/javascripts/jquery-2.1.1.min.js'}" type="text/javascript"></script>
-		<script src="@{'/public/javascripts/jquery.countdown.js'}" type="text/javascript"></script>
-		<script src="@{'/public/javascripts/qrcode/jquery.qrcode.min.js'}" type="text/javascript"></script>
-		<script type="text/javascript">
-			$(function(){
-				$('#qrcode').qrcode({width: 240,height: 240,text: "${qrcode}"});
-				
-				$('#timer').countdown('${task.endDate}', function(event) {
-					var $this = $(this).html(event.strftime('<div><span>%-D</span><span>%H:%M:%S</span></div><div>DAYS LEFT</div>'));
-				});
-			}); 
-		 </script>
-    </head>
-    <body>
-		<page size="A4">
-			<h3 class="title">${task.company.name}</h3>
-			<div id="task-header" class="row">
-				#{if task?.images?.size() > 0}
-					<div id="task-img" class="col col-xs-8 col-sm-8 col-md-8" style="background-image: url('@{TaskController.getImage(task?.images?.iterator()?.next()?.id)}');"></div>
-				#{/if}
-				<ul class="col col-xs-4 col-sm-4 col-md-4">
-					#{if task.products.iterator().next().coupons.iterator().next().value > 0}
-						<li id="qrcode"></li>
+	function fbShare(){
+		FB.ui({
+			method: 'share',
+			href: '${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token?.urlEncode()}'
+		});
+	}
+	
+ </script>
+
+<page size="A4">
+	<h3 class="title">${job.task.company.name}</h3>
+	<div id="task-header" class="row">
+		#{if job.task?.images?.size() > 0}
+			<div id="task-img" class="col col-xs-8 col-sm-8 col-md-8" style="background-image: url('@{TaskController.getImage(job.task?.images?.iterator()?.next()?.id)}');"></div>
+		#{/if}
+		<ul class="col col-xs-4 col-sm-4 col-md-4">
+			#{if job.task.products.iterator().next().coupons.iterator().next().value > 0}
+				<li id="qrcode"></li>
+			#{/if}
+			#{else}
+				<li id="timer" class="under-line"></li>
+			#{/else}
+			<li id="share">
+				<a id="twitter-share" class="share-btn" href='https://twitter.com/intent/tweet?url=${play.Play.configuration.getProperty("application.baseUrl") + "jobcontroller/viewproduct?jobToken=" + job?.token.urlEncode().urlEncode()}&text=${job.task.products.iterator().next().productName.urlEncode()}'>
+					<img src="../../public/images/twitter_icon.png">
+				</a>
+				<a id="fb-share" class="share-btn" onclick="fbShare();">
+					<img src="../../public/images/facebook_icon.png">
+				</a>
+			</li>
+			<li id="price">  
+				<div>
+					#{if job.task.products.iterator().next().coupons.iterator().next().value > 0}
+						<span class="through">S$${job.task.products.iterator().next().price}</span><br/>
+						<span class="off">S$${job.task.products.iterator().next().coupons.iterator().next().value}</span><span class="bubble"> Off by merchant scan</span>
 					#{/if}
 					#{else}
-						<li id="timer" class="under-line"></li>
+						<span class="origin">S$${job.task.products.iterator().next().price}</span>
 					#{/else}
-					<li id="price">  
-						<div>
-							#{if task.products.iterator().next().coupons.iterator().next().value > 0}
-								<span class="through">S$${task.products.iterator().next().price}</span><br/>
-								<span class="off">S$${task.products.iterator().next().coupons.iterator().next().value}</span><span class="bubble"> Off by merchant scan</span>
-							#{/if}
-							#{else}
-								<span class="origin">S$${task.products.iterator().next().price}</span>
-							#{/else}
-						</div>
-					</li>
-				</ul>
-			</div>
-			<div class="under-line">
-				<h3 class="title">${task.products.iterator().next().productName}</h3>
-				${task.products.iterator().next().description.raw()}
-			</div>
-			#{if task.rewards.iterator().next().rewardType.getName() == 'commission'}
-				<div class="under-line">
-					<h3 class="title">Term & Conditions</h3>
-					${task.products.iterator().next().coupons.iterator().next().instruction.raw()}
-					<p class="note">
-						<span class="glyphicon glyphicon-info-sign"></span>
-						If Merchants/shoppers refuses to scan QR Code of vouchers/coupons, consumers/users has right to report the breaches to us with relevant certificates such as receipt. If we verify that they breaches any obligation to consumers, users and/or Task Workers, the Task Poster will receive punishment which must pay the penalty equivalent to 3 times of the reward to the reporter as a reward or MooTask has the right to remove the MooTask account of the merchant/shopper without any indemnity.
-					</p>
 				</div>
-			#{/if}
-			<div class="under-line">
-				<h3 class="title">How to go there ?</h3>
-				#{list items:task?.company?.addresses, as:'address'}
-				   <p>${address.block} ${address.street} ${address.unit} Singapore ${address.postCode}</p>
-				#{/list}
-			</div>
-			<div class="img-list">
-				#{list items:task?.images, as:'image'}
-				   <img class="task-tile" src="@{TaskController.getImage(image.id)}"/>
-				   #{if image?.caption?.length() > 0}
-				   		${image?.caption.raw()}
-				   #{/if}
-				#{/list}
-			</div>
-		</page>
-		<div id="footer">
-        	<p>Copyright ©2014-2020 EKOO LAB PTE LTD. All Rights Reserved.</p>
-        	<div>
-        		<a href="@{PrivacyController.privatePrivacy()}">Private Privacy</a> | <a href="@{PrivacyController.termsAndConditions()}">Terms and Conditions</a>
-        	</div>
-        </div>
-    </body>
-</html>
+			</li>
+		</ul>
+	</div>
+	<div class="under-line">
+		<h3 class="title">${job.task.products.iterator().next().productName}</h3>
+		${job.task.products.iterator().next().description.raw()}
+	</div>
+	#{if job.task.rewards.iterator().next().rewardType.getName() == 'commission'}
+		<div class="under-line">
+			<h3 class="title">Term & Conditions</h3>
+			${job.task.products.iterator().next().coupons.iterator().next().instruction.raw()}
+			<p class="note">
+				<span class="glyphicon glyphicon-info-sign"></span>
+				If Merchants/shoppers refuses to scan QR Code of vouchers/coupons, consumers/users has right to report the breaches to us with relevant certificates such as receipt. If we verify that they breaches any obligation to consumers, users and/or Task Workers, the Task Poster will receive punishment which must pay the penalty equivalent to 3 times of the reward to the reporter as a reward or MooTask has the right to remove the MooTask account of the merchant/shopper without any indemnity.
+			</p>
+		</div>
+	#{/if}
+	<div class="under-line">
+		<h3 class="title">How to go there ?</h3>
+		#{list items:job.task?.company?.addresses, as:'address'}
+		   <p>${address.block} ${address.street} ${address.unit} Singapore ${address.postCode}</p>
+		#{/list}
+	</div>
+	<div class="img-list">
+		#{list items:job.task?.images, as:'image'}
+		   <img class="task-tile" src="@{TaskController.getImage(image.id)}"/>
+		   #{if image?.caption?.length() > 0}
+		   		${image?.caption.raw()}
+		   #{/if}
+		#{/list}
+	</div>
+</page>

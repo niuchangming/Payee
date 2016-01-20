@@ -14,6 +14,7 @@ import models.State;
 import models.Tag;
 import models.User;
 import play.Play;
+import play.jobs.Every;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
 import play.vfs.VirtualFile;
